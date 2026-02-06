@@ -1,0 +1,246 @@
+<!DOCTYPE html>
+<html lang="pt">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Sobre o Projeto - IECI</title>
+    
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.3/jquery.min.js"></script>
+
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/css/bootstrap.min.css">
+
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+
+    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
+    <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+
+    <script src="https://code.highcharts.com/highcharts.js"></script>
+    <script src="https://code.highcharts.com/modules/exporting.js"></script>
+
+    <link rel="stylesheet" href="css/style.css">
+
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/js/bootstrap.min.js"></script>
+
+    <script src="js/scripts.js"></script>
+
+    <style>
+        .author-row { cursor: pointer; transition: transform 0.2s; }
+        .author-row:hover { transform: translateY(-5px); }
+    </style>
+</head>
+
+<body>
+
+    <!-- NAVBAR -->
+    <nav class="navbar navbar-inverse navbar-fixed-top">
+        <div class="container">
+            <div class="navbar-header">
+                <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#navbar" aria-expanded="false" aria-controls="navbar">
+                    <span class="sr-only">Toggle navigation</span>
+                    <span class="icon-bar"></span>
+                    <span class="icon-bar"></span>
+                    <span class="icon-bar"></span>
+                </button>
+                <a class="navbar-brand" href="index.html">IECI Projeto</a>
+            </div>
+
+                <!-- Botão Dark Mode -->
+                <button type="button" id="themeBtn" class="btn btn-warning navbar-btn navbar-right" style="margin-right: 0; margin-left: 15px;" title="Alternar entre Modo Claro e Escuro" aria-label="Alternar Tema">
+                    <i class="fa fa-moon-o"></i>
+                </button>
+
+            <div id="navbar" class="collapse navbar-collapse">
+                <ul class="nav navbar-nav navbar-right">
+                    <li><a href="index.html">Início</a></li>
+                    <li><a href="metodologia.html">Metodologia</a></li>
+                    <li><a href="tecnica.html">Técnica</a></li>
+                    <li><a href="analise.html">Análise</a></li> 
+                    <li><a href="laboratorio.html">Laboratório</a></li>
+                    <li class="active"><a href="about.html">Sobre</a></li>
+                </ul>
+            </div>
+        </div>
+    </nav>
+
+    <!-- CONTEÚDO PRINCIPAL -->
+    <div class="container mt-50">
+        
+        <!-- HEADER UNIFICADO -->
+        <div class="page-header-unified">
+            <h1 class="text-uppercase">Informações do Projeto</h1>
+            <p class="lead text-muted">Conheça a equipa e os recursos utilizados no desenvolvimento.</p>
+            <p class="small text-muted">
+                Introdução à Engenharia de Computadores e Informática | <strong>Engenharia de Computadores e Informática</strong><br>
+                Universidade de Aveiro | <strong>Data de Criação: 19/12/2025</strong>
+            </p>
+            <span class="label label-default" style="font-size: 100%;">Grupo G01</span>
+        </div>
+
+        <!-- SECÇÃO DE AUTORES -->
+        <div class="row">
+            <div class="col-md-12">
+                <h3 class="page-header mt-0"><i class="fa fa-users"></i> Identificação dos Autores</h3>
+            </div>
+
+<!-- Autor 1: Henrique Gala -->
+            <div class="col-sm-6 col-md-6 author-row" title="Clique para localizar no mapa">
+                <div class="thumbnail" style="padding: 20px;">
+                    <img src="images/gala.jpeg" class="img-responsive img-circle center-block" alt="Henrique Gala" style="width: 140px; height: 140px; object-fit: cover;">
+                    
+                    <div class="caption text-center">
+                        <h3 style="margin-top: 10px;">Henrique Gala <br><small>NMec: 131898</small></h3>
+                        <p><a href="mailto:henriqueggala@ua.pt">henriqueggala@ua.pt</a></p>
+                        
+                        <div class="mt-20 mb-20">
+                            <span class="label label-primary" style="font-size: 90%;">Contribuição: 50%</span>
+                        </div>
+                        
+                        <div class="well well-sm small text-muted" style="margin-bottom: 0; min-height: 85px; display: flex; align-items: center; justify-content: center;">
+                            <span>
+                                <strong>Ações:</strong> Gestão de repositório (Git) e diretórios. Pesquisa bibliográfica. Desenvolvimento HTML/CSS/JS das páginas <em>Metodologia</em>, <em>Técnica</em> e <em>Laboratório</em>. Colaboração nas páginas <em>Início</em> e <em>Sobre</em>.
+                            </span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Autor 2: Iury Figueredo -->
+            <div class="col-sm-6 col-md-6 author-row" title="Clique para localizar no mapa">
+                <div class="thumbnail" style="padding: 20px;">
+                    <img src="images/iury.jpeg" class="img-responsive img-circle center-block" alt="Iury Figueredo" style="width: 140px; height: 140px; object-fit: cover;">
+                    
+                    <div class="caption text-center">
+                        <h3 style="margin-top: 10px;">Iury Figueredo <br><small>NMec: 132655</small></h3>
+                        <p><a href="mailto:iuryfigueredo@ua.pt">iuryfigueredo@ua.pt</a></p>
+                        
+                        <div class="mt-20 mb-20">
+                            <span class="label label-primary" style="font-size: 90%;">Contribuição: 50%</span>
+                        </div>
+                        
+                        <div class="well well-sm small text-muted" style="margin-bottom: 0; min-height: 85px; display: flex; align-items: center; justify-content: center;">
+                            <span>
+                                <strong>Ações:</strong> Definição da arquitetura e estrutura inicial do projeto. Desenvolvimento HTML/CSS/JS da página <em>Análise</em> e tratamento de dados. Colaboração estrutural nas páginas <em>Início</em> e <em>Sobre</em>.
+                            </span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+<!-- SECÇÃO UNIFICADA: RECURSOS, LICENÇAS E BIBLIOGRAFIA -->
+        <div class="row mt-30 mb-50">
+            <div class="col-md-12">
+                <div class="panel panel-primary">
+                    <div class="panel-heading">
+                        <h3 class="panel-title fw-bold"><i class="fa fa-book"></i> Créditos, Licenças e Bibliografia</h3>
+                    </div>
+                    <div class="panel-body">
+                        <div class="row">
+                            
+                            <!-- COLUNA 1: TECNOLOGIA & LICENÇAS (Site) -->
+                            <div class="col-md-6">
+                                <h4 class="text-info border-bottom pb-10 mt-0">Arquitetura Web (Recursos)</h4>
+                                <ul class="list-group small">
+                                    <li class="list-group-item list-group-item-info">
+                                        <strong><i class="fa fa-github fa-lg"></i> Repositório do Projeto:</strong>
+                                        <span class="text-muted">Versão Final G01</span>
+                                        <a href="https://github.com/detiuaveiro/trabalho-de-aprofundamento-g01" target="_blank" class="pull-right fw-bold">Aceder <i class="fa fa-arrow-right"></i></a>
+                                        <br><small class="text-muted" style="display:block; margin-top:5px;"><em>Nota: Desenvolvimento realizado em branches paralelos para gestão de conflitos.</em></small>
+                                    </li>
+                                    <li class="list-group-item">
+                                        <strong>Bootstrap 3.3.6:</strong> Framework CSS (Licença MIT).
+                                        <a href="https://getbootstrap.com/docs/3.3/" target="_blank" class="pull-right text-muted"><i class="fa fa-external-link"></i></a>
+                                    </li>
+                                    <li class="list-group-item">
+                                        <strong>jQuery 1.11.3:</strong> Manipulação DOM (Licença MIT).
+                                        <a href="https://jquery.com/" target="_blank" class="pull-right text-muted"><i class="fa fa-external-link"></i></a>
+                                    </li>
+                                    <li class="list-group-item">
+                                        <strong>Highcharts JS:</strong> Visualização de Dados (Licença Educacional).
+                                        <a href="https://www.highcharts.com/" target="_blank" class="pull-right text-muted"><i class="fa fa-external-link"></i></a>
+                                    </li>
+                                    <li class="list-group-item">
+                                        <strong>Leaflet JS:</strong> Mapas Interativos (Licença BSD-2).
+                                        <a href="https://leafletjs.com/" target="_blank" class="pull-right text-muted"><i class="fa fa-external-link"></i></a>
+                                    </li>
+                                    <li class="list-group-item">
+                                        <strong>Font Awesome 4.7:</strong> Iconografia (Licença SIL OFL 1.1).
+                                        <a href="https://fontawesome.com/v4/license/" target="_blank" class="pull-right text-muted"><i class="fa fa-external-link"></i></a>
+                                    </li>
+                                    <li class="list-group-item list-group-item-warning">
+                                        <strong>IA Generativa (Gemini):</strong> Ferramenta auxiliar de refatoração de código e revisão linguística.
+                                    </li>
+                                </ul>
+                            </div>
+
+                            <!-- COLUNA 2: FONTES DE INVESTIGAÇÃO (Conteúdo) -->
+                            <div class="col-md-6">
+                                <h4 class="text-success border-bottom pb-10 mt-0">Bibliografia e Pesquisa</h4>
+                                <div class="list-group small">
+                                    <!-- Protocolos -->
+                                    <a href="https://datatracker.ietf.org/doc/html/rfc793#section-3.1" target="_blank" class="list-group-item">
+                                        <i class="fa fa-file-text-o text-primary"></i> <strong>RFC 793 (TCP):</strong> Transmission Control Protocol (IETF).
+                                    </a>
+                                    <a href="https://www.rfc-editor.org/rfc/rfc792.html" target="_blank" class="list-group-item">
+                                        <i class="fa fa-file-text-o text-primary"></i> <strong>RFC 792 (ICMP):</strong> Internet Control Message Protocol (IETF).
+                                    </a>
+                                    
+                                    <!-- Scanning e Segurança -->
+                                    <a href="https://nmap.org/book/man-port-scanning-techniques.html" target="_blank" class="list-group-item">
+                                        <i class="fa fa-terminal text-danger"></i> <strong>Nmap Documentation:</strong> Port Scanning Techniques.
+                                    </a>
+                                    <a href="https://vulert.com/vuln-db/debian-11-edk2-168073" target="_blank" class="list-group-item">
+                                        <i class="fa fa-bug text-danger"></i> <strong>CVE Vulnerability:</strong> Debian/EDK2 (ISN Flaw).
+                                    </a>
+                                    <a href="https://runmodule.com/2020/10/25/tcp-session-hijacking/" target="_blank" class="list-group-item">
+                                        <i class="fa fa-user-secret text-danger"></i> <strong>TCP Session Hijacking:</strong> Análise de vetores de ataque.
+                                    </a>
+
+                                    <!-- Conceitos Gerais -->
+                                    <a href="https://en.wikipedia.org/wiki/Footprinting" target="_blank" class="list-group-item">
+                                        <i class="fa fa-globe text-info"></i> <strong>Footprinting:</strong> Definição e técnicas de reconhecimento.
+                                    </a>
+                                    <a href="https://www.ibm.com/br-pt/think/topics/vulnerability-assessment" target="_blank" class="list-group-item">
+                                        <i class="fa fa-building text-info"></i> <strong>IBM Security:</strong> Vulnerability Assessment.
+                                    </a>
+                                </div>
+                            </div>
+
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- MAPA LEAFLET -->
+        <div class="row mt-30 mb-30">
+            <div class="col-md-12">
+                <div class="panel panel-inverse">
+                    <div class="panel-heading" style="background-color: #222; color: #fff;">
+                        <h3 class="panel-title"><i class="fa fa-map-marker"></i> Localização: DETI - Universidade de Aveiro</h3>
+                    </div>
+                    <div class="panel-body p-0">
+                        <div id="map" style="height: 450px; width: 100%;"></div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+    </div>
+
+    <!-- FOOTER -->
+    <footer class="text-center">
+        <div class="container">
+            <hr class="border-secondary">
+            <div class="row">
+                <div class="col-md-6 text-left">
+                    <small class="text-muted-a11y">Universidade de Aveiro - DETI - IECI 2025</small>
+                </div>
+                <div class="col-md-6 text-right">
+                    <small class="text-muted-a11y"><i class="fa fa-clock-o"></i> <span id="relogio-digital">00:00:00</span></small>
+                </div>
+            </div>
+        </div>
+    </footer>
+
+</body>
+</html>

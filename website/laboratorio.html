@@ -1,0 +1,282 @@
+<!DOCTYPE html>
+<html lang="pt">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Laboratório Interativo - IECI</title>
+    
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.3/jquery.min.js"></script>
+
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/css/bootstrap.min.css">
+    
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+
+    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
+    <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+
+    <script src="https://code.highcharts.com/highcharts.js"></script>
+    <script src="https://code.highcharts.com/modules/exporting.js"></script>
+
+    <link rel="stylesheet" href="css/style.css">
+
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/js/bootstrap.min.js"></script>
+
+    <script src="js/scripts.js"></script>
+
+    <style>
+        .mt-25 { margin-top: 25px; }
+        .vertical-align-center { display: flex; align-items: center; justify-content: center; } 
+    </style>
+</head>
+
+<body>
+
+    <!-- NAVBAR -->
+    <nav class="navbar navbar-inverse navbar-fixed-top">
+        <div class="container">
+            <div class="navbar-header">
+                <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#navbar" aria-expanded="false" aria-controls="navbar">
+                    <span class="sr-only">Toggle navigation</span>
+                    <span class="icon-bar"></span>
+                    <span class="icon-bar"></span>
+                    <span class="icon-bar"></span>
+                </button>
+                <a class="navbar-brand" href="index.html">IECI Projeto</a>
+            </div>
+
+                <!-- Botão Dark Mode -->
+                <button type="button" id="themeBtn" class="btn btn-warning navbar-btn navbar-right" style="margin-right: 0; margin-left: 15px;" title="Alternar entre Modo Claro e Escuro" aria-label="Alternar Tema">
+                    <i class="fa fa-moon-o"></i>
+                </button>
+
+            <div id="navbar" class="collapse navbar-collapse">
+                <ul class="nav navbar-nav navbar-right">
+                    <li><a href="index.html">Início</a></li>
+                    <li><a href="metodologia.html">Metodologia</a></li>
+                    <li><a href="tecnica.html">Técnica</a></li>
+                    <li><a href="analise.html">Análise</a></li> 
+                    <li class="active"><a href="laboratorio.html">Laboratório</a></li>
+                    <li><a href="about.html">Sobre</a></li>
+                </ul>
+            </div>
+        </div>
+    </nav>
+
+    <!-- CONTEÚDO PRINCIPAL -->
+    <div class="container mt-50">
+        
+        <!-- HEADER UNIFICADO -->
+        <div class="page-header-unified">
+            <h1 class="text-uppercase">Laboratório de Reconhecimento</h1>
+            <p class="lead text-muted">Ferramentas de simulação e consolidação prática.</p>
+            <span class="label label-success" style="font-size: 100%;">Prática Laboratorial</span>
+        </div>
+
+        <!-- FERRAMENTA 1: SIMULADOR TCP -->
+        <div class="row">
+            <div class="col-md-12">
+                <div class="row mb-20">
+                    <div class="col-xs-12">
+                        <span class="label label-primary" style="margin-right: 10px; font-size: 90%;">Passo 1</span>
+                        <h2 class="h4" style="display: inline">Estabelecimento de Conexão (RFC 793)</h2>
+                    </div>
+                </div>
+                
+                <p class="text-muted mb-20">
+                    Antes de qualquer scan, é necessário compreender como uma conexão legítima é criada. Utilize este simulador para visualizar a troca de flags <strong>SYN, SYN-ACK e ACK</strong> e o incremento dos números de sequência.
+                </p>
+
+                <div class="panel panel-default">
+                    <div class="panel-heading clearfix">
+                        <h3 class="panel-title pull-left fw-bold" style="padding-top: 7px;">
+                            <i class="fa fa-share-alt"></i> Simulador de Handshake
+                        </h3>
+                        <button id="btn-reset-sim" class="btn btn-link btn-sm pull-right text-danger" style="text-decoration: none;">
+                            <i class="fa fa-refresh"></i> Reiniciar
+                        </button>
+                    </div>
+                    <div class="panel-body text-center">
+                        
+                        <!-- Área Visual da Animação -->
+                        <div class="area-simulacao p-20 mb-20" style="position: relative; height: 140px; border: 1px dashed #ccc; border-radius: 4px;">
+                            <div class="row" style="height: 100%;">
+                                <div class="col-xs-2 text-center">
+                                    <div style="z-index: 10; position: relative;">
+                                        <i class="fa fa-laptop fa-3x text-info"></i><br><small>Cliente</small>
+                                    </div>
+                                </div>
+                                <div class="col-xs-8" style="position: relative; height: 100%;">
+                                    <!-- O Pacote Animado -->
+                                    <div id="tcp-packet" style="display:none; top: 35%; left: 10%; position: absolute; z-index: 100;" class="label label-default"></div>
+                                    <!-- Linha de Conexão -->
+                                    <div style="position: absolute; top: 50%; left: 0; right: 0; border-top: 2px solid #ddd; z-index: 0;"></div>
+                                </div>
+                                <div class="col-xs-2 text-center">
+                                    <div style="z-index: 10; position: relative;">
+                                        <i class="fa fa-server fa-3x text-warning"></i><br><small>Servidor</small>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Controlos (Botões Justificados) -->
+                        <div class="btn-group btn-group-justified mb-20" role="group">
+                            <div class="btn-group" role="group">
+                                <button id="btn-syn" class="btn btn-default text-primary">1. Enviar SYN</button>
+                            </div>
+                            <div class="btn-group" role="group">
+                                <button id="btn-synack" class="btn btn-default text-warning" disabled>2. Receber SYN-ACK</button>
+                            </div>
+                            <div class="btn-group" role="group">
+                                <button id="btn-ack" class="btn btn-default text-success" disabled>3. Enviar ACK</button>
+                            </div>
+                        </div>
+                        
+                        <div id="status-handshake" class="mt-20" style="display:none;"></div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <hr>
+
+        <!-- FERRAMENTA 2: SCANNER E QUIZ -->
+        <div class="row">
+            
+            <!-- Gerador de Comandos -->
+            <div class="col-md-7">
+                <div class="row mb-20">
+                    <div class="col-xs-12">
+                        <span class="label label-primary" style="margin-right: 10px; font-size: 90%;">Passo 2</span>
+                        <h2 class="h4" style="display: inline">Simulação de Port Scanning</h2>
+                    </div>
+                </div>
+
+                <div class="panel panel-default" style="height: 100%;">
+                    <div class="panel-body">
+                        <p class="small text-muted mb-20">
+                            Configure os parâmetros para gerar um comando <strong>Nmap</strong> válido. Note como o tipo de scan (-sS vs -sU) altera a furtividade e velocidade.
+                        </p>
+                        
+                        <div class="row">
+                            <div class="col-md-8">
+                                <div class="form-group">
+                                    <label class="control-label small fw-bold">Alvo (IP/Domínio)</label>
+                                    <input type="text" id="targetIP" class="form-control input-sm" placeholder="192.168.1.1">
+                                </div>
+                            </div>
+                            <div class="col-md-4">
+                                <div class="form-group">
+                                    <label class="control-label small fw-bold">Perfil de Tempo</label>
+                                    <input type="range" class="form-control" min="0" max="5" id="timing" value="3" style="box-shadow: none; border: none; padding: 0;">
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <div class="form-group">
+                            <label class="control-label small fw-bold">Técnica de Scan</label>
+                            <select id="scanType" class="form-control input-sm">
+                                <option value="-sS">TCP SYN (Half-Open)</option>
+                                <option value="-sT">TCP Connect (Full)</option>
+                                <option value="-sU">UDP Scan (Lento)</option>
+                                <option value="-sN">NULL Scan (Furtivo)</option>
+                            </select>
+                        </div>
+
+                        <button id="btn-iniciar-scan" class="btn btn-primary btn-block mb-20 btn-sm">
+                            <i class="fa fa-terminal"></i> Gerar e Executar
+                        </button>
+
+                        <!-- Barra de Progresso -->
+                        <div class="progress" style="height: 15px; margin-bottom: 5px;">
+                            <div id="scan-progress-bar" class="progress-bar progress-bar-info progress-bar-striped active" role="progressbar" style="width: 0%"></div>
+                        </div>
+                        <div id="scan-status-text" class="small text-muted text-center mb-20">A aguardar input...</div>
+
+                        <div class="well well-sm small font-monospace" style="background-color: #e9ecef; border: 1px solid #ccc;">
+                            <span class="text-success fw-bold">$</span> <span id="comando-output">nmap -sS -T3 192.168.1.1</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Quiz -->
+            <div class="col-md-5">
+                <div class="row mb-20">
+                    <div class="col-xs-12">
+                        <span class="label label-warning" style="margin-right: 10px; font-size: 90%;">Teste</span>
+                        <h2 class="h4" style="display: inline">Validação de Conhecimentos</h2>
+                    </div>
+                </div>
+
+                <div class="panel panel-default" style="height: 100%;">
+                    <div class="panel-body text-center" style="padding: 30px;">
+                        <div id="quiz-container">
+                            <i class="fa fa-question-circle fa-4x text-warning mb-20"></i>
+                            <h4 class="fw-bold">Quiz Rápido</h4>
+                            <p id="pergunta-num" class="small text-muted">Teste a sua compreensão sobre as RFCs.</p>
+                            <hr style="width: 50%;">
+                            <p id="pergunta-texto" class="fw-bold mb-20">Está pronto para começar?</p>
+                            
+                            <div id="opcoes-quiz">
+                                <button class="btn btn-default btn-block">Começar Quiz</button>
+                            </div>
+                        </div>
+                        <div id="quiz-feedback" class="mt-20 alert" style="display:none; padding: 10px;"></div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <hr>
+
+        <!-- FERRAMENTA 3: CALCULADORA -->
+        <div class="row mb-30">
+            <div class="col-md-12">
+                <div class="panel panel-default">
+                    <div class="panel-body p-20">
+                        <h4 class="text-success mt-0"><i class="fa fa-calculator"></i> Calculadora de Overhead de Rede</h4>
+                        <p class="small text-muted">
+                            Calcule o tamanho total de um pacote somando os cabeçalhos obrigatórios (TCP + IP = 40 Bytes).
+                        </p>
+                        
+                        <div class="row">
+                            <div class="col-md-9">
+                                <div class="form-group">
+                                    <label class="control-label small fw-bold">Payload de Dados (Bytes)</label>
+                                    <input type="number" id="dataInput" class="form-control" value="1460">
+                                </div>
+                            </div>
+                            <div class="col-md-3">
+                                <button id="btn-calc-overhead" class="btn btn-success btn-block mt-25">Calcular</button>
+                            </div>
+                        </div>
+
+                        <div class="well well-sm mt-20 clearfix" style="margin-bottom: 0;">
+                            <span class="small pull-left" style="padding-top: 5px;">TCP (20B) + IP (20B) + Payload:</span>
+                            <span class="h4 pull-right text-success fw-bold" style="margin: 0;"><span id="totalRes">1500</span> Bytes (MTU)</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+    </div>
+
+    <!-- FOOTER -->
+    <footer class="text-center">
+        <div class="container">
+            <hr class="border-secondary">
+            <div class="row">
+                <div class="col-md-6 text-left">
+                    <small class="text-muted-a11y">Universidade de Aveiro - DETI - IECI 2025</small>
+                </div>
+                <div class="col-md-6 text-right">
+                    <small class="text-muted-a11y"><i class="fa fa-clock-o"></i> <span id="relogio-digital">00:00:00</span></small>
+                </div>
+            </div>
+        </div>
+    </footer>
+
+</body>
+</html>

@@ -1,0 +1,570 @@
+\documentclass{report}
+\usepackage[T1]{fontenc} % Fontes T1
+\usepackage[utf8]{inputenc} % Input UTF8
+\usepackage[backend=biber, style=ieee]{biblatex} % para usar bibliografia
+\usepackage{csquotes}
+\usepackage[portuguese]{babel} %Usar língua portuguesa
+\usepackage{blindtext} % Gerar texto automaticamente
+\usepackage[printonlyused]{acronym}
+\usepackage{hyperref} % para autoref
+\usepackage{graphicx}
+\usepackage{indentfirst}
+
+\usepackage{array} %Adicionamos estas packages para poder dimensionar as tabelas de melhor forma
+\usepackage{booktabs}
+\usepackage{longtable}
+\usepackage{tabularx}
+
+\bibliography{bibliografia} % para indicar que o ficheiro de bibliografia é o bibliografia.bib
+
+
+\begin{document}
+%%
+% Definições
+%
+\def\titulo{Introdução ao Footprinting e Scanning de Redes: Análise de Protocolos de Comunicação e Avaliação de Vulnerabilidades}
+\def\data{DATA}
+\def\autores{Henrique Gala, Iury Figueredo}
+\def\autorescontactos{(131898) henriqueggala@ua.pt, (132655) iuryfigueredo@ua.pt}
+\def\versao{VERSAO}
+\def\departamento{Dept. de Eletrónica, Telecomunicações e Informática}
+\def\empresa{Universidade de Aveiro}
+\def\logotipo{imagens/ua.pdf}
+\def\repo{ieci2025-ap-g1}
+%
+%%%%%% CAPA %%%%%%
+%
+\begin{titlepage}
+
+\begin{center}
+%
+\vspace*{50mm}
+%
+{\Huge \titulo}\\ 
+%
+\vspace{10mm}
+%
+{\Large \empresa}\\
+%
+\vspace{10mm}
+%
+{\LARGE \autores}\\ 
+%
+\vspace{30mm}
+%
+\begin{figure}[h]
+\center
+\includegraphics{\logotipo}
+\end{figure}
+%
+\vspace{30mm}
+\end{center}
+%
+\begin{flushright}
+\versao
+\end{flushright}
+\end{titlepage}
+
+%%  Página de Título %%
+\title{%
+{\Huge\textbf{\titulo}}\\
+{\Large \departamento\\ \empresa}
+}
+%
+\author{%
+    \autores \\
+    \autorescontactos
+}
+%
+\date{2 de novembro de 2025}
+%
+\maketitle
+
+\pagenumbering{roman}
+
+%%%%%% RESUMO %%%%%%
+\begin{abstract}
+Este projeto no âmbito da \ac{leci} explora a relevância da \ac{cs} e do Reconhecimento de redes (\acs{rr}) para a arquitetura de sistemas. Sendo analisado de forma rigorosa as técnicas de \textit{port scanning} e \ac{fp} \cite{WikipediaFootprinting}, de muita importância para avaliar a superfície de ataque em qualquer rede. \textbf{O foco principal} está nas análises detalhadas de protocolos como o \ac{tcp} e \ac{icmp}, detalhando como \textit{scans} furtivos, como o \textit{NULL} Scan, exploram as regras protocolares (\ac{rst} vs. \textit{drop}) assim podendo inferir o modo da porta sem realizar por completo o \textit{three-way handshake}.
+
+A discussão crítica tem em causa a solução dos mecanismos de defesa. Demonstra-se que o \textbf{\acs{ack} Scan} é decisivo para o engenheiro, porque distingue e mapeia as regras de filtragem entre \textit{firewalls} sem e com estado. Identificou-se ainda fragilidades nas arquiteturas, como por exemplo a previsibilidade do \textbf{\ac{isn}} em \textit{firmwares} \ac{uefi}, que perturba a segurança da \ac{tcp} \textit{Session Hijacking}.
+
+A robustez da arquitetura de segurança é suportada pelo desempenho do \textit{kernel}, onde conceitos chave como \textit{zero copy} e \textit{tasklets} concretizam a escalabilidade necessária para a deteção de intrusos. As \textbf{decisões éticas e legais} são abordadas com forte importância, reforçando que o domínio destas técnicas avançadas deve ser aplicado somente no âmbito do \ac{eh} e com extrema responsabilidade. 
+
+Para finalizar, esta pesquisa fornece o \textbf{conhecimento fundamental} para que os futuros engenheiros possam proteger e defender sistemas de forma proativa. 
+
+\end{abstract}
+
+%%%%%% Agradecimentos %%%%%%
+% Segundo glisc deveria aparecer após conclusão...
+\renewcommand{\abstractname}{Agradecimentos}
+%\begin{abstract}
+%Eventuais agradecimentos.
+%Comentar bloco caso não existam agradecimentos a fazer.
+%\end{abstract}
+
+\renewcommand{\contentsname}{Índice}
+\tableofcontents
+\listoftables     % descomentar se necessário
+\listoffigures    % descomentar se necessário
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\clearpage
+\pagenumbering{arabic}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\chapter{Introdução}
+\label{chap.introducao}
+
+Com a evolução da tecnologia e o aprimoramento dos ambientes digitais, viu-se uma crescente necessidade no aumento da \ac{cs}, garantindo a integridade e confidencialidade da arquitetura de rede e dos sistemas. Desta forma, estão sendo desenvolvidos vários métodos para assegurar a proteção dos usuários, dos quais serão tratados nesse relatório. 
+
+O desenvolvimento desse trabalho está fundamentado nos três pilares da \ac{cs}. O primeiro é o \textit{\ac{fp}}, que é uma técnica usada por especialistas da área para recolher informações sobre sistemas computacionais e seus donos. O segundo é o \textit{Scanning}, que ocorre após o \textit{\ac{fp}} e tem como principal objetivo identificar pontos fracos em sistemas informáticos, através do mapeamento da arquitetura da rede e os serviços em execução, com intenção de previnir a exploração por cibercriminosos. Isso inclui falhas de configuração, bugs, etc.. Por fim, "Avaliação de Vulnerabilidades" é, resumidamente, um método para identificar, avaliar e relatar possíveis brechas de segurança no ambiente virtual de uma organização e ocorre no final do processo de \ac{rr}.
+
+Pelo facto das técnicas de \textit{Scanning} terem como fundamento a análise das respostas dos protocolos  na Camada de Transporte, um dos objetivos desse trabalho é explicar o \ac{tcp} e o \ac{ip}, e o \ac{icmp}, de forma a que o leitor fique a entender seus principais conceitos. Para além disso, temos como meta detalhar as técnicas de \textit{Scanning} e analisar as implicações na arquitetura da rede no âmbito da segurança virtual. 
+
+Este documento está dividido em quatro capítulos.
+Depois desta introdução,
+no \autoref{chap.metodologia} é apresentada a metodologia seguida,
+no \autoref{chap.resultados} são apresentados os resultados obtidos,
+sendo estes discutidos no \autoref{chap.analise}.
+Finalmente, no \autoref{chap.conclusao} são apresentadas
+as conclusões do trabalho.
+
+\chapter{Metodologia}
+\label{chap.metodologia}
+O trabalho realizado tem natureza predominantemente teórica e analítica, dando ênfase na compreensão de conceitos fundamentais do\textit{\ac{eh}}. A metodologia  seguida teve como foco garantir a precisão técnica dos fundamentos e uma descrição bem fundamentada dos métodos de reconhecimento.
+
+\section{Análise das Especificações de Protocolo}
+A base teórica do trabalho está assente na pesquisa e análise das \ac{ep} definidas pelo \ac{ietf}, que regem a ação das comunicações via internet. Esta abordagem foi necessário para fundamentar de forma técnica as inferências de \textit{scanning}.
+
+\subsection{Especificações Chave}
+Foram analisadas duas especificações chave:
+
+\begin{description}
+    \item[\textbf{RFC 793 (\textit{Transmisssion Control Protocol} - TCP):}] \cite{RFC793}
+    Essa análise permitiu que fosse possível dar a entender sobre o funcionamento dos campos de controlo (\textit{flags}) como \textbf{SYN}, \textbf{ACK} e \textbf{RST}. O tipo de funcionamento padrão da \textit{flag} RST em ambiente de conexão fechada (ou inexistentes) é a ferramenta que justifica as técnicas de \textbf{\textit{scanning} furtivo} (\textit{stealth scanning}).
+    \item[\textbf{RFC 792 (\textit{Internet Control Message Protocol} - ICMP):}] \cite{RFC792}
+    Esta especificação forneceu o conhecimento necessário para a etapa de \textit{\ac{fp}} (através das mensagens \textit{Echo/Echo Reply}) de forma a justificar a lógica de deteção de portas \textbf{\ac{udp}} fechadas, através da mensagem \textit{\textbf{Destination Unreachable}}(Tipo 3, código 3 - \textit{Port Unreachable}).
+    
+\end{description}
+
+\section{Contextualização e Validação}
+Toda a informação que foi retirada dos protocolos foi contextualizada e aplicada através da revisão de literatura específica sobre a \textbf{aplicação prática} dessas regras, como por exemplo nas ferramentas de \textit{\ac{ps}} mais utilizadas. Foi estudada a forma de operação de técnicas como o \textit{\ac{ack}} scan para \textbf{mapeamento de \textit{firewalls}}.
+
+Adicionalmente, nosso estudo baseou-se na análise de vulnerabilidades da Camada de Transporte, realizando uma conexão da parte teórica do campo \textbf{\textit{\ac{seq}}} (RFC 793) à atividade real. Esta pesquisa foi validada com uma revisão do vetor de ataque \textit{TCP Session Hijacking} e a sua importância nos dias de hoje, demonstrado pela vulnerabilidade CVE-2023-45237 \cite{CVE202345237} (falha de \ac{isn} previsível em firmware).
+
+\section{Declaração}
+O presente trabalho contou com o apoio da ferramenta de Inteligência Artificial generativa Gemini 3 para efeitos de correção ortográfica, revisão gramatical e otimização textual. Contudo, todas as ideias, conceitos e descrições foram integralmente desenvolvidos pelos autores, baseando-se na investigação das referências bibliográficas citadas.
+
+
+\chapter{Resultados e Descrição}
+\label{chap.resultados}
+Este capítulo contém a base técnica necessária para compreender o processo de \ac{rr} e as suas vulnerabilidades.
+
+\section{Fundamentos de Protocolo para o Scanning}
+
+Esta secção estabelece as regras da Camada de Transporte e Camada de Internet que as ferramentas de scanning exploram.
+
+\subsection{O Protocolo de Controlo de Transmissão (TCP)} \cite{RunmoduleTCPSession}
+
+    O \textbf{Protocolo de Controlo de Transmissão (TCP)}, especificado na \textbf{RFC 793}, é a fundação da comunicação fiável e orientada à conexão na Internet. Embora o seu propósito seja garantir a entrega ordenada dos dados, as regras estritas que governam a sua operação (como a resposta a segmentos inesperados) são o ponto de exploração central para as técnicas de scanning furtivo. O TCP é responsável por transportar informações vitais, incluindo os endereços de host de origem e de destino.
+
+\begin{figure}[hbt!]
+    \centering
+    \includegraphics[width=0.5\textwidth]{imagens/tcp.png}
+    \caption{Ilustração do \textit{Three-Way Handshake}}
+    \label{fig:1.1}
+\end{figure}
+
+\clearpage
+
+\subsubsection{Elementos do Cabeçalho TCP}
+    O cabeçalho TCP utiliza campos de 16 e 32 bits para manter o estado da conexão e assegurar a fiabilidade dos dados.
+\begin{itemize}
+    \item \textbf{Portas}: Os campos \texttt{Source Port} e \texttt{Destination Port} utilizam ambos 16 bits para identificar as aplicações envolvidas na comunicação.
+    \item \textbf{Sequence Number (Número de Sequência) (32 bits)}:
+    \begin{itemize}
+        \item \textbf{Transferência de Dados}: Indica o número do byte cumulativo do primeiro byte de dados de aplicação contido no segmento TCP.
+        \item \textbf{Início de Conexão}: Quando a flag \texttt{SYN} está presente, este campo contém o \textbf{Initial Sequence Number (ISN)}. O flag \texttt{SYN} consome uma unidade de espaço de número ISN + 1
+    \end{itemize}
+    \item \textbf{Acknowledgement Number (Número de Confirmação) (32 bits)}:
+    \begin{itemize}
+        \item \textbf{Controlo de Fluxo}: Utilizado pelo recetor para informar o emissor qual é o próximo byte de dados que espera receber. O valor é o número de sequência mais alto recebido, mais um.
+        \item \textbf{Piggybacking}: Após o estabelecimento da conexão, a maioria dos segmentos de dados enviados de volta e para a frente terão a flag \texttt{ACK} e um \texttt{Acknowledgement Number} válidos, um processo denominado \textbf{piggybacking} que garante o fluxo de dados contínuo e fiável.
+    \end{itemize}
+\end{itemize}
+
+\subsubsection{Estabelecimento e Encerramento}
+A conexão TCP é estabelecida através do procedimento \textbf{Three-Way Handshake} (aperto de mão a três vias), um ciclo de respostas entre os dois \textit{endpoints}. O encerramento (\texttt{CLOSE}) indica que um utilizador não tem mais dados para enviar, mas pode continuar a receber dados até que o outro lado também envie um \texttt{CLOSE}. 
+
+\subsubsection{O Papel Crítico do \texttt{RST} (Reset) no Scanning}
+A flag \texttt{RST} (\textit{Reset}) é a base do \textit{stealth scanning} e dos métodos de inferência de portas. A regra fundamental do TCP afirma que:
+\begin{quote}
+    Se um segmento de entrada for recebido por uma porta onde nenhum processo está à escuta (estado \texttt{CLOSED}) e o segmento não for um reset válido, um \texttt{RST} deve ser enviado em resposta.
+\end{quote}
+    Isto significa que o envio de um \texttt{SYN} (ou qualquer outro flag isolado) para uma porta fechada provoca a resposta \texttt{RST}, confirmando o estado fechado da porta.
+
+\subsubsection{Lógica dos Scans Furtivos (\textit{Stealth Scans})}
+    As técnicas \texttt{FIN}, \texttt{NULL} e \texttt{XMAS} exploram a exceção a esta regra de reset para alcançar a furtividade:
+    \begin{itemize}
+    \item \textbf{Porta Fechada}: Se o sistema receber um segmento que não tenha \texttt{SYN}, \texttt{RST} ou \texttt{ACK} ativos (como nos Scans \texttt{FIN}, \texttt{NULL} ou \texttt{XMAS}), a regra do \texttt{RST} é acionada, e um \texttt{RST} é enviado em resposta.
+    \item \textbf{Porta Aberta}: Se o segmento for recebido por uma porta aberta (onde um processo está à escuta), mas o segmento for inválido ou inesperado, o sistema deve \textbf{descartar} (\textit{drop}) o pacote e \textbf{não responder}.
+\end{itemize}
+A ausência de uma resposta \texttt{RST} perante um segmento \texttt{FIN}, \texttt{NULL} ou \texttt{XMAS} permite ao scanner inferir que a porta está \textbf{aberta} (ou filtrada), pois evita o handshake completo e a respetiva deteção por mecanismos de defesa de rede. A furtividade refere-se a qualquer técnica que utilize pacotes que parecem ser erros ou restos de sessões antigas, evitando a deteção.
+
+\subsection{O Protocolo de Mensagens de Controlo da Internet (ICMP)}
+
+O Protocolo de Mensagens de \ac{icmp}, detalhado na RFC 792, é um protocolo auxiliar que funciona como parte adicional do \ac{ip}. O seu objetivo principal não está focado no transporte de dados, mas sim em fornecer um feedback e reportar erros sobre problemas no ambiente de comunicação, como quando um \textit{datagram} não consegue alcançar seu destino
+
+\begin{figure}[hbt!]
+    \centering
+    \includegraphics[width=0.7\textwidth]{imagens/icmp.png}
+    \caption{Ilustração do \textit{ICMP Demonstração}}
+    \label{fig:1.2}
+\end{figure}
+
+\clearpage
+
+\subsubsection{Mensagens Chave para o \ac{rr}}
+
+O modo em que o \textbf{\ac{icmp}} relata os erros é explorado nas duas primeiras fases do reconhecimento de redes: O \textit{\textbf{Host Discovery}} e o \textit{\textbf{Scanning \ac{udp}}.}
+
+\paragraph{\textit{Echo Request} e \textbf{Echo Reply} (Tipos 8 e 0):}
+Estas mensagens são a base do \textbf{\textit{\ac{fp}} Ativo} (conhecido como \textit{\texttt{ping}}).
+
+\begin{itemize}
+    \item O emissor envia uma mensagem \textit{\textbf{Echo Request}} (Tipo 8) e, se o host alvo estiver ativo e não filtrado (ou seja, estiver apto a receber e enviar mensagens), ele responde invertendo os endereços e alterando o código do tipo para \textit{\textbf{Echo Reply}} (Tipo 0).
+    \item Esta troca confirma a presença do host na rede.
+\end{itemize}
+
+\paragraph{\textit{Destination Unreachable} (Tipo 3):}
+Esta mensagem é crucial para o \textit{scanning}, pois reporta falhas de entrega.
+\begin{itemize}
+    \item O \ac{icmp} inclui vários códigos de erro, entre eles o \textbf{Código 3 (\textit{Port Unreachable})} sendo o mais relevante para o \textit{\textbf{scanning \ac{udp}}}.
+    \item \textbf{Lógica de \textit{Scanning \ac{udp}}}: Como o Protocolo de Datagrama do Utilizador (\textbf{\acs{udp}}) é \textit{connectionless} (sem conexão) e não exige confirmação, a única maneira de um scanner ter a certeza de que uma porta está \textbf{fechada} é quando o recetor responde com uma mensagem \ac{icmp} \textbf{\textit{Destination Unreachable}} (Tipo 3, Código 3).
+    \item Se a porta estiver \textbf{aberta}, o host apenas descarta o pacote e \textbf{não envia resposta}.
+\end{itemize}
+
+\subsubsection{Limitações do \ac{icmp} no Scanning}
+
+A utilização do \ac{icmp} no \textit{scanning} apresenta limitações que afetam a velocidade e a precisão das varreduras:
+
+\begin{itemize}
+    \item \textbf{Taxa de Limitação (\textit{Rate Limiting})}: Muitos sistemas operativos e dispositivos de rede limitam a taxa de envio de mensagens \ac{icmp} \textit{Port Unreachable} por padrão. Isto força os scanners a abrandar o ritmo das sondas \acs{udp} para evitar que o host alvo descarte as mensagens de erro por excesso de tráfego, prejudicando significativamente a velocidade do \textbf{\textit{\ac{udp}} Scan}.
+    \item \textbf{Filtragem Total}: Os firewalls são frequentemente configurados para bloquear todas as mensagens do \ac{icmp} de entrada ou saída para esconder a presença de hosts, tornando os scans de \textit{Host Discovery} ineficazes.
+\end{itemize}
+
+\subsection{O Processo de Reconhecimento de Redes} \cite{RainforestScanners}
+    A forma como o scanning funciona se baseia na aplicação direta das regras de protocolo definidas para as Camadas de Internet e de Transporte. O processo de reconhecimento de redes segue uma progressão de raciocínio iniciada pela identificação de alvos ativos (\textbf{Host Discovery}), antes de avançar para a varredura e análise detalhada das portas (\textbf{Port Scanning}).
+
+\subsubsection{Descoberta de Hosts (\textit{Host Discovery})}
+    A primeira etapa do reconhecimento ativo de uma rede é a Descoberta de Hosts, que tem como finalidade determinar quais endereços IP correspondem a sistemas ativos. Esta técnica explora as mensagens de controlo definidas no \textbf{Protocolo de Mensagens de Controlo da Internet (ICMP)}, conforme a \textbf{RFC 792}.
+
+    O método mais comum está assente nas mensagens \textbf{Echo Request} e \textbf{Echo Reply}:
+\begin{itemize}
+    \item \textbf{Sonda}: O scanner envia uma mensagem \textbf{ICMP Echo Request (Tipo 8)} para o endereço alvo. A pesquisa do scanner tem como meta a determinação do estado do host (se está ligado e a funcionar).
+    \item \textbf{Resposta}: Se o host alvo estiver ativo e o tráfego ICMP não estiver filtrado, ele responde com uma mensagem \textbf{Echo Reply (Tipo 0)}. Para esta resposta ser formada, o host recetor realiza uma inversão nos endereços de origem e destino, alterando o código do tipo e recalculando o checksum.
+    \item \textbf{Consequência}: A receção do Echo Reply confirma a presença do host na rede, permitindo que a fase de Port Scanning seja iniciada.
+\end{itemize}
+
+\begin{table}[h!]
+    \centering
+    \caption{Comportamento de Inferência de Host Ativo (RFC 792)}
+    \label{tab:tabela1.1}
+    \begin{tabular}{|l|c|p{3cm}|p{4cm}|}
+        \hline
+        \textbf{Sonda (Tipo)} & \textbf{Protocolo} & \textbf{Resposta do Host Alvo} & \textbf{Inferência do Scanner} \\
+        \hline
+        Echo Request (Tipo 8) & ICMP & Echo Reply (Tipo 0) recebido. & Host Ativo (Online) \\
+        \hline
+        Echo Request (Tipo 8) & ICMP & Nenhuma Resposta após timeout. & Host Inativo ou Tráfego ICMP Filtrado \\
+        \hline
+        Envio de Pacote (qualquer) & ICMP & Destination Unreachable (Tipo 3, Código 1) & Host Inativo ou Inalcançável \\
+        \hline
+    \end{tabular}
+\end{table}
+
+\newpage
+
+\subsection{Técnicas de Descoberta de Portas (\textit{Port Scanning})}
+    Esta secção detalha a aplicação prática dos princípios fundamentais de protocolo para a avaliação do estado das portas. Isso é possível através de \textbf{flags de controlo do TCP} e os \textbf{códigos de erro do ICMP} para deduzir o estado da porta, sejam elas abertas, fechadas ou filtradas.
+
+\subsubsection{Scanning por Conexão Total (\textit{Full Connect})}
+    Esta metodologia é considerada a abordagem mais básica, mas menos furtiva, de varrimento de portas. O \textbf{Full Connect Scan} tenta estabelecer uma conexão completa, concluindo o \textbf{Three-Way Handshake do TCP} (\texttt{SYN} $\rightarrow$ \texttt{SYN-ACK} $\rightarrow$ \texttt{ACK}).
+\begin{itemize}
+    \item \textbf{Lógica}: O scanner permite que a conexão seja estabelecida na sua totalidade, enviando o segmento \texttt{ACK} final.
+    \item \textbf{Vantagem}: É um método simples e confiável.
+    \item \textbf{Desvantagem}: Pelo facto de ser completado o handshake, esta técnica é facilmente detetada, deixando registos completos de conexão nos logs do sistema operativo alvo, o que a torna ineficiente em situações em que a furtividade é essencial.
+\end{itemize}
+
+\subsubsection{Scanning Furtivo (\textit{SYN Scan})}
+    O \textbf{SYN Scan}, também conhecido como \textbf{half-open scanning}, é a técnica de port scanning mais comum e eficiente. É baseada na regra da \textbf{RFC 793} para a flag \texttt{RST} e na lógica do Three-Way Handshake para inferir o estado da porta sem completar a conexão.
+\begin{itemize}
+    \item \textbf{Lógica da Sonda}: O scanner envia um pacote com apenas a flag \texttt{SYN} ativa.
+    \item \textbf{Consequências}:
+    \begin{itemize}
+        \item \textbf{Porta Aberta}: O alvo responde com um pacote \texttt{SYN + ACK} (o segundo passo do handshake). O scanner não envia o \texttt{ACK} final, mas sim um \texttt{RST} imediato para impedir que a conexão seja estabelecida. O alvo não regista uma conexão completa, garantindo a classificação de “furtivo” (daí o termo \textit{half-open}).
+        \item \textbf{Porta Fechada}: O alvo responde imediatamente com um pacote \texttt{RST} (\textit{Reset}) e \texttt{ACK}. Esta resposta confirma, segundo a RFC 793, que a porta se encontra de facto fechada.
+    \end{itemize}
+\end{itemize}
+
+\subsubsection{Scanning Stealth Baseado em Flags (FIN, NULL, XMAS)}
+    As técnicas de varrimento baseadas em flags exploram a regra fundamental do TCP detalhada na \textbf{RFC 793} relativa ao modo de atuação do flag \texttt{RST} (\textit{Reset}) em portas fechadas. Têm como principal objetivo criar pacotes que pareçam ser erros ou restos de sessões antigas, para evitar mecanismos de reconhecimento de defesa de rede.
+
+    A lógica é a seguinte:
+\begin{itemize}
+    \item \textbf{Porta Fechada}: A RFC 793 diz-nos que, no caso de um sistema receber um segmento TCP que não faça parte de uma conexão ativa e que não contenha os flags \texttt{SYN}, \texttt{RST} ou \texttt{ACK} ativados (como nos scans \texttt{FIN}, \texttt{NULL} ou \texttt{XMAS}), o sistema deve enviar um pacote \texttt{RST} como resposta.
+    \item \textbf{Porta Aberta}: Caso contrário, se a porta estiver a escutar (aberta), o sistema deve \textbf{descartar} (\textit{drop}) o pacote sem enviar qualquer resposta.
+    \item \textbf{Inferência Furtiva}:
+    \begin{itemize}
+        \item \textbf{Resposta \texttt{RST}}: Confirma que a porta está \textbf{Fechada}.
+        \item \textbf{Sem Resposta}: Indica que a porta está \textbf{Aberta} (ou filtrada por um firewall).
+    \end{itemize}
+\end{itemize}
+Esta distinção, que explora a ausência de uma resposta ao invés de sua presença, é a essência da furtividade.
+
+\subsubsection{Scanning UDP} \cite{NmapPortScan}
+    O \textbf{User Datagram Protocol (UDP)} é um protocolo \textit{connectionless} (sem conexão), utilizado na maior parte das vezes para transmissões sensíveis ao tempo (como DNS e VoIP). A ausência de mecanismos de handshake e de confirmação torna o scanning UDP relativamente mais lento e desafiador do que o TCP.
+\begin{itemize}
+    \item \textbf{A Sonda}: O scanner envia um datagram UDP (geralmente vazio) para a porta alvo.
+    \item \textbf{Consequências (Base ICMP)}:
+    \begin{itemize}
+        \item \textbf{Porta Fechada}: O host alvo deve retornar uma mensagem \textbf{ICMP Destination Unreachable} (Tipo 3, Código 3 – \textit{Port Unreachable}), conforme está descrito na \textbf{RFC 792}. Esta é a única resposta que confirma uma porta fechada.
+        \item \textbf{Porta Aberta/Filtrada}: Se a porta estiver aberta, o serviço pode responder com um datagram UDP (confirmando que está aberta). Se a porta estiver filtrada ou aberta sem responder, o scanner acaba por não receber resposta, classificando a porta como \texttt{open|filtered}.
+    \end{itemize}
+    \item \textbf{Limitação da Taxa}: O principal desafio é a \textbf{limitação da taxa de ICMP} (\textit{rate limiting}) imposta por muitos hosts, o que faz com que o scanner tenha que abrandar e esperar por \textit{timeouts} longos, atrasando de forma significativa a varredura.
+\end{itemize}
+
+    \subsubsection{Scanning ACK (Mapeamento de Firewall)}
+    O \textbf{ACK Scan} é uma técnica única, pelo facto de não ter como objetivo a determinação do estado de uma porta. Seu propósito é \textbf{mapear o ruleset do firewall}, determinando se ele é \textit{stateful} ou \textit{stateless}.
+\begin{itemize}
+    \item \textbf{A Sonda}: O scanner envia um pacote apenas com a flag \texttt{ACK} e um número de sequência aleatório, sendo que esse pacote não faz parte de nenhuma conexão ativa.
+    \item \textbf{Consequências}:
+    \begin{itemize}
+            \item \textbf{Unfiltered (Firewall Stateless)}: Se o firewall permitir o tráfego de entrada e o pacote chegar ao host, este, por não ter conexão ativa, irá responder com um pacote \texttt{RST}. Assim, o scanner classifica a porta como \textbf{unfiltered} (alcançável), indicando que o firewall é \textbf{stateless} e não está a inspecionar o estado da sessão.
+            \item \textbf{Filtered (Firewall Stateful)}: Caso o firewall não receba nenhum pacote (descartando-o silenciosamente) ou se o scanner receber uma mensagem \textbf{ICMP Destination Unreachable} (com códigos como 0, 1, 10, 13), a porta é classificada como \textbf{filtered}. Isto indica que um firewall \textbf{stateful} inspecionou o pacote e bloqueou por não fazer parte de uma sessão estabelecida.
+    \end{itemize}
+\end{itemize}
+
+\begin{table}[htbp]
+    \centering
+    \caption{Sumário das Técnicas de Port Scanning}
+    \label{tab:tabela1.2}
+    \begin{tabularx}{\textwidth}{>{\raggedright\arraybackslash}p{3.0cm} c X X}
+        \toprule
+        \textbf{Técnica de Scanning} & \textbf{Protocolo Base} & \textbf{Lógica de Inferência} & \textbf{Vantagem/Objetivo} \\
+        \midrule
+        Full Connect & TCP (RFC 793) & Completa o Handshake (SYN $\rightarrow$ SYN-ACK $\rightarrow$ ACK). & Confiável; Padrão não-furtivo. \\
+        \midrule
+        SYN Scan (Half-Open) & TCP (RFC 793) & Envia SYN; Resposta SYN-ACK $\rightarrow$ Aberta. Resposta RST $\rightarrow$ Fechada. & Furtivo (não completa o handshake). \\
+        \midrule
+        FIN/NULL/XMAS & TCP (RFC 793) & Nenhuma Resposta $\rightarrow$ Aberta. Resposta RST $\rightarrow$ Fechada. & Furtivo (evita detecção por firewalls simples). \\
+        \midrule
+        UDP Scan & UDP (RFC 792 ICMP) & ICMP Port Unreachable $\rightarrow$ Fechada. Nenhuma Resposta $\rightarrow$ Aberta/Filtrada. & Determinar serviços sem conexão (DNS, VoIP). \\
+        \midrule
+        ACK Scan & TCP / ICMP & Recebe RST $\rightarrow$ Unfiltered (Firewall stateless). Nenhuma Resposta $\rightarrow$ Filtered (Firewall stateful). & Mapear o ruleset do firewall. \\
+        \bottomrule
+    \end{tabularx}
+\end{table}
+
+\chapter{Análise}
+\label{chap.analise}
+
+Esta análise tem como principal objetivo interpretar de forma crítica os resultados obtidos no \autoref{chap.resultados}, relacionando-os com o funcionamento interno dos protocolos abordados, com os \textbf{mecanismos de proteção que existem nas redes modernas} e com a perspetiva \textbf{ética e legal} associada ao uso das técnicas de \ac{fp} e \textit{scanning} em redes de comunicação. A análise possui uma estrutura que fornece ao leitor não apenas uma compreensão técnica, mas também uma visão sistemática do impacto do \ac{rr} em ambientes reais, evidenciando a sua relevância para a engenharia de redes e conceção de sistemas de segurança.
+
+Para tal, são examinadas as interações entre os \textbf{mecanismos de defesa} (como \textit{firewalls} e sistemas de deteção de instrusões) e as técnicas de \textit{scanning}, avaliando o seu efeito sobre:
+\begin{enumerate}
+	\item a arquitetura dos sistemas;
+	\item a robustez dos sistemas;
+	\item as implicações éticas e legais do uso dessas técnicas.
+\end{enumerate}
+ 
+
+\section{Interpretação dos Scans}
+
+O \textit{scanning} de portas é a \textbf{primeira fase do reconhecimento}, onde o invasor ou analista de segurança procura mapear a \textbf{superfície de ataque} de uma rede. A eficácia destas técnicas reside na interpretação cuidadosa das respostas, que são ditadas pelas \textbf{regras principais dos protocolos} \ac{icmp} e \ac{tcp}.
+
+\subsection{Aprofundamento das Regras de Protocolo para a Furtividade}
+
+A lógica do \textit{scanning} furtivo (\textit{stealth}) explora o comportamento dos \ac{so} \cite{Russinovich2020OSStory}em relação aos segmentos \ac{tcp} não esperados.
+\begin{itemize}
+	\item \textbf{O papel do \ac{rst}:} De acordo com a RFC 793, se uma portats \textbf{NÃO} tem um processo à escuta (estado de \textit{CLOSED}, o sistema envia um \ac{rst} em resposta a qualquer outro segmento de entrada (em exceção a outro \ac{rst}). O concebimento de um pacote \ac{rst} em resposta a um segmento \ac{syn}indica que a porta encontra-se fechada. 
+	\item \textbf{O Scan Furtivo (\textit{NULL} Scan):} As técnicas como \textbf{\textbf{NULL} Scan} enviam um segmento \ac{tcp} sem quaisquer flags definidos (\ac{syn}, \ac{rst}, \ac{ack}, etc.) A lógica de resposta a este segmento é o fator que mostra o estado atual de uma porta:
+		\begin{enumerate}
+			\item \textbf{Porta fehada:} Envia um \textbf{\textit{RST}} como resposta, em ordem a regra do protocolo.
+			\item \textbf{Porta aberta:} O sistema deve \textbf{descartar (\textit{drop})} o pacote e não enviar qualquer resposta, assim a ação tornando-se inivisível ao \textit{firewall} mais simples. 
+		\end{enumerate}
+\end{itemize}
+
+Esta diferença de comportamento é o ponto de partida para o \textbf{reconhecimento passivo}, permitindo o analista diferenciar portas fechadas de abertas sem completar o \textit{three-way handshake} - Processo de 3 etapas usados pelo \ac{tcp} a fim de estabelecer uma \textbf{conexão confiável} cliente/servidor.
+
+\subsection{A Vulnerabilidade do Initial Sequence Number (ISN)} \cite{IBMVulnerabilityAssessment}
+
+A segurança na arquitetura \ac{tcp}, núcleo da comunicaçäo na Internet, depende da imprevisibilidade e aleatoriedade dos números sequenciais . O \ac{tcp} 
+utiliza os \ac{seq} e de confirmação \ac{ack} para garantir a organização e confiabilidade da entrega de dados, um conceito conhecido como \textit{piggybacking}. O campo \textit{Sequence Number} (32 bits) contém o \ac{isn} no segmento \ac{syn} inicial. 
+
+Uma vulnerabilidade crítica, do tipo vista no \textit{EDK2 Network Package} (CVE-2023-4527), represeta um erro na geração deste número, permitindo que um invasor consiga \textbf{prever o \ac{isn}.} 
+\begin{itemize}
+	\item \textbf{Implicações no Session Hijacking}: O ataque - \ac{tcp} \textit{Session Hijacking} depende de forma exclusiva da identificação dos números \ac{seq} e \acs{ack} atuais da sessão em causa  para a concretização de pacotes válidos que o servidor validará. Porém se o \ac{isn} for previsível, o invasor dispensa ou torna mais fácil a fase de \textbf{rastreamento da conexão} \textit{Tracking the Connection}.
+	\item \textbf{Ataque Facilitado:} Não por \textit{sniffing} o tráfego para conseguir o posterior número \textit{seq} certo, a previsibilidade do \ac{isn} permite o intruso simplificar ou simplesmente contornar esta parte. Isso compromete a confiabilidade na \textbf{Camada de Transporte} e permite que o invasor seguir para a fase de \textbf{desincronização da conexão}, onde coloca seus própios pacotes maliciosos na sessão.  
+\end{itemize}
+
+A ocorrência desta fragilidade promove a importância de uma \textbf{arquitetura de segurança} que engloba desde à pilha de rede ao \textit{firmware} (UEFI).
+
+\section{Sistemas de Segurança}
+
+A capacidade de eficiência do \textit{port scanning} como uma técnica de reconhecimento é enfrentada diretamente pela arquitetura de segurança, como os \ac{ids} e \textit{Firewalls}. A visualização dos scans, nomeadamente o \textbf{ACK Scan}, permite um engenheiro determinar também as \textbf{regras de filtragem} implementadas na rede, não só apenas portas abertas.
+
+A tabela \ref{tab:scantype} sumariza a eficácia das técnicas de \textit{scanning} que exploram as ações dos protocolos contra os mecanismos defensivos com estado.
+
+\begin{table}[h]
+	\caption{Eficiência do Scanning contra Ssistemas Defesinvos}
+	\label{tab:scantype}
+	\makebox[\textwidth]{\centering
+	\begin{tabular}{l|c|c|c|}
+		\hline
+		\textbf{Tipo de scan} & \textbf{Necessita privilégios?} & \textbf{Furtividade Alta?} & \textbf{Detetável por Firewall Stateful?} \\
+		\hline
+		Connect Scan & Não & Baixa & Sim (Fácil) \\
+		\hline
+		SYN Scan & Sim & Média & Sim (Moderado) \\
+		\hline
+		NULL Scan & Sim & ALta & Não (Simples) \\
+		\hline
+		ACK Scan & Sim & N/A (Mapeia Regras) & Não (Mapeamento somente) \\
+		\hline
+	\end{tabular}}
+\end{table}
+
+\subsection{O ACK Scan} 
+
+Este é um scan de mapeamento de regras de \textit{firewall}, e não para determinação do estado da porta. Ele atua enviando um segmento \ac{tcp} com somente o \ac{ack} definido. Como o \ac{ack} só deve ser definido em segmentos que pertencem a uma conexão \ac{tcp} já existente, o segmento não é um requisito válido para começar uma comunicação.
+
+A utilização do mesmo baseia-se no entendimento da seguinte reposta:
+
+\begin{itemize}
+	\item \textbf{Porta Não Filtrada (Resposta = \ac{rst}):} Se o sistema em causa (ou o \textit{firewall} anterior ao mesmo) não filtrar ativamente a porta ou não possuir a informacão de uma conexão com o devido segmento, será respondido com um pacote \ac{rst}. O \textit{scanner} designa a porta como \textbf{não filtrada}, confirmando que é alcançável pelo pacote \ac{ack}, porém seu estado final (fechado ou aberto) -> \textbf{indefinido}.
+	
+	\item \textbf{Porta Filtrada (Sem Resposta / \ac{icmp})} Se for filtrada por um \textit{firewall}, este irá  \textbf{descartar} o pacote pois nao há resposta ou enviar uma mensagem de erro \textit{Destination Unreachable}). Por fim o scanner rotula a porta como \textbf{filtrada}.
+\end{itemize}
+	
+A diferença entre não ter qualquer resposta ou receber um \ac{rst} é o ínicio para o engenheiro inferir se um \textit{Firewall Stateful} está em uso. Um \textit{Firewall Stateful} encontra o estado das conexões ativa e descaratia um pacote \ac{ack} o qual não pertenca a qualquer sessão já estabelecida.
+
+\subsection{Arquitetura do Kernel}
+
+A competência de um sistema de segurança (como um \textit{firewall} baseado em software ou um \ac{ids}) de encontrar scans e tratar tráfego de rede é unido a arquitetura do \ac{so}.
+
+\begin{itemize}
+	
+	\item \textbf{Deteção inteligente:} O \textit{port sacnning}, principalmente em grande escala, pode originar um volume de tráfego que necessita um enorme desempenho do kernel. A preferência por mecanismos bem estruturados (como as \textit{Deferred Procedure Calls} ou \textit{DPCs} no Windows e os \textbf{\textit{tasklets}} no Linux)   solucionou problemas de escalabilidade em sistemas \textit{multi-processor}, possibilitando a \textbf{mitigação e deteção} de scans mais produtivo e estável. A engenharia atual obriga que os sistemas de segurança sejam implementados em \textit{kernels} preemptíveis e reentrantes, essenciais para a caspacidade de resposta. 
+
+	\item \textbf{Desempenho e Escalabilidade:} A pilha \acs{ip}/\ac{icmp} e seus devidos drivers de rede são dependentes da eficácia do \textit{kernel}. Problemas relacionados com a arquitetura como o \textit{Thundering Herd} (onde múltiplas threads acionam para a mesma requisição de rede, posteriormente ocorrendo picos de atividade excessivos), e a falta de \textbf{mecanismos de cópia zero} (\textit{zero copy}) em certas arquiteturas, impactaram a velocidade de resposta e escalabilidade em cargas de trabalhos em empresas.
+	
+\end{itemize}
+
+\section{A Visão Legal e Ética na Engenharia de Computadores}
+
+O entendimento aprofundado das técnicas de \textit{port scanning} e das vulnerabilidades de protocolos, como a previsibilidade do \textbf{\ac{isn}}, é o que diferençia o \textbf{formado de \ac{leci}} em relação a um utilizador normal. Este conhecimento abrangente impõe um dever ético e legal significativo no suporte e no esquema de sistemas de segurança.
+
+\subsection{Decisão e Linha Ética}
+
+A diferença entre uma atividade maliciosa e o reconhecimento legítimo consiste na \textbf{autorização} e na \textbf{intenção}.
+
+\begin{itemize}
+	\item O \textit{expert} de segurança (\textit{Ethical Hacker}) aproveita de scans ocultos, como o \textit{\textbf{NULL Scan}} ou o \textit{\textbf{\ac{syn} Scan}}, com o objetivo de \textbf{mitigar e encontrar falhas} antes que um invasor as investigue. Esta é uma etapa crucial para o projeto de sistemas confiáveis e robustos.
+	
+	\item Ao construir um sistema, o engenheiro deve ter a habilidade de \textbf{prever a utilização de scans} e outras técnicas de ataque, incorporando certas etapas de segurança:
+		\begin{enumerate}
+			\item \textbf{Configuração de \textit{Firewalls Stateful}:} A arquitetura de segurança necessita de dar prioridade a \textit{firewalls} com estado (\textit{stateful}) capazes de rejeitar e detetar pacotes anómalos, como segmentos \ac{ack} ou \ac{syn} os quais não fazem parte de um \textit{handshake} estabelecido.
+			\item \textbf{Monitorização (\ac{ids}):} \ac{ids} devem ser programados para identificar um comportamento \textit{scanning} (e.g., diversos pacotes \ac{syn} não seguidos de \ac{ack}). Para isso, o kernel do \ac{so} deve utilizar arquiteturas eficazes, como os \textbf{\textit{tasklets}}, assim garantindo que o tráfego de rede  seja processado de forma escalável, sem qualquer sobrecarregamento. 
+		\end{enumerate}
+\end{itemize}
+
+A \textbf{escolha de uma decisão no projeto de sistemas} deve ser informada pela lógica de invasão, assim possibilitando que os pontos fracos explorados pelos \textit{scans} (como a ausência de respostas em portas abertas por \textit{NULL Scans}) sejam detetadas pela camada de defesa.
+
+\subsection{Legalidade do Reconhecimento}
+
+Apesar do conhecimento destes utensílios serem vitais, a aplicação dos mesmos sem a permissão por escrito e explícito do propietário do sistema constitui, na maioria das jurisdições, um \textbf{violação legal.}
+
+\begin{itemize}
+	\item A utilização de técnicas para \textbf{desincrozinar a conexão} (como o envio de apcotes \textit{null} ou \ac{rst}/\ac{syn} forjados) para realizar uma \textit{\ac{tcp} Session Hijacking} é obviamente uma criminalidade ao ser realizado contra um alvo não autorizado.  
+	\item Por mais inofensivo que seja \textbf{mapear a arquitetura de segurança} de terceiros por \textit{port scanning}, independente do \textit{scan} ser considerado furtivo ou ¨passivo¨, pode muitas vezes ser entendido como uma tentativa de \textbf{acesso não autorizado}.
+\end{itemize} 
+
+A importância deste tópico para a \ac{eci} é a obrigação de um engenheiro operar em relacão a um quadro de \textbf{implicações éticas e legais}, reconhecendo que a crucial averiguação de sistemas e capacidade de análise pode e deve ser usada só e somente para objetivos de melhoria e defesa da arquitetura de segurança.
+
+\chapter{Conclusões}
+\label{chap.conclusao}
+Este trabalho se aprofundou em domínios da \ac{cs} e do \ac{rr}, tendo como foco a exploração dos protocolos de rede e sua mecânica rigorosa, fundamental para a formação em \ac{eci}. A missão de contextualizar as técnicas de \textit{port scanning} e \ac{fp}, e de estudar criticamente a arquitetura de segurança, foram conseguidos. A análise detalhada do \ac{icmp} e do \ac{tcp} tiveram a função de fundamento para compreender a manipulação inerente ao design protocolear e como a mesma pode ser para mapear a \textbf{superfície de invasão de um sistema}.
+
+O que foi encontrado demonstra que a eficácia do \textit{port sacnning} é proveniente da interpretação precisa das \textbf{bandeiras (\textit{flags}) \ac{tcp}}, tais como \ac{syn}, \ac{rst} e \ac{ack}. A técnica de \textit{scanning} furtivo, por o exemplo o \textbf{NULL Scan}, capitaliza na regra protocolares que aconselha um sistema com a porta aberta \textbf{descartar (drop)} um pacote não solicitado, por outro lado um sistema com a porta fechada deve responder com um \ac{rst}. Esta conclusão sublinha a classe das ferramentas de reconhecimento e a demanda  de arquiteturas de segurança \textbf{também de classe}.
+
+No plano da arquitetura de segurança, a análise crítica revelou dois pontos muito importantes para a Engenharia de Computadores.
+
+\begin{enumerate}
+	\item O \textit{\ac{ack} scan} mostrou ser uma ferramenta de grande importância para o analista, pois não tem como objetivo identificar o estado da porta, mas sim o \textbf{mapeamento de regras de \textit{firewall}}, distinguindo sistemas que usam filtragem com estado (\textit{stateful}) em comparação aos que não usam.
+	\item A vulnerabilidade no \ac{isn} em \textit{firmwares} \ac{uefi} demonstra que falhas de segurança podem existir na base da arquitetura do sistema, tornando mais fáceis ataques de \ac{tcp} \textit{Session Hijacking}.
+\end{enumerate}
+
+O progresso dos \textit{kernels} em \ac{so}, como a manutenção de erros de concorrência como o \textit{Thundering Herd}, e a adaptação do Linux para incluir recursos como os \textit{zero copy} (copia zero) e \textbf{tasklets}, é a conclusão dos engenheiros à necessidade de segurança  empresarial e escalabilidade em relação aos perigos descobertos.
+Este trabalho idealiza que a informação sobre métodos de invasão, como o \textit{port scanning}, é o pilar para a \textbf{implementação e construção de defesas robustas}. A Engenharia de Computadores deve operar com uma visão de segurança que proteja todos os níveis, desde a gestão de concorrência no \textit{kernel} ao \textit{firmware}.
+
+Por fim, é obrigatório que um futuro Engenheiro, reconheça os efeitos legais e éticos associados ao uso destas técnicas e ferramentas. Este conhecimento abrangente confere um poder que deve ser utilizado sob uma situação de autorizaçao explícita e  \textbf{exclusivamente para fins de defesa}, reforçando a relevância do \ac{eh} como prática académica e profissional. 
+
+\begin{figure}[hbt!]
+    \centering
+    \includegraphics[width=0.7\textwidth]{imagens/graficocyberseguranca.jpg}
+    \caption{Ilustração de crimes virtuais em várias áreas}
+    \label{fig:1.3}
+\end{figure}
+
+\chapter{Contribuições dos autores}
+
+Este trabalho foi dividido igualmente, focando-se na divisão entre a base técnica e o desenolvimento da análise cítica e das suas conclusões.
+
+\vspace{10pt}
+\textbf{\ac{hg}} foi responsável pela redação do Capítulo \ref{chap.introducao} (Introdução), do Capítulo \ref{chap.metodologia} (Metodologia), do Capitulo \ref{chap.resultados} (Resultados), tal como a gestão do repositório git, estrutura técnica do documento e a pesquisa.
+
+\vspace{10pt}
+\textbf{\ac{if}} foi responsável pela redação do Resumo, do Capítulo \ref{chap.analise} ( Análise) e do Capitulo \ref{chap.conclusao} (Conclusão), tal como a gestão do repositório git, estrutura técnica do documento e a pesquisa.
+
+\vspace{10pt}
+Percentagem de contribuição de cada autor: \textbf{\ac{hg}} - 50\%, \textbf{\ac{if}} - 50\%\\
+
+\vspace{10pt}
+\textbf{Repositório GitHub:} \repo
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\chapter*{Acrónimos}
+\begin{acronym}
+\acro{ua}[UA]{Universidade de Aveiro}
+\acro{leci}[LECI]{Licenciatura em Engenharia de Computadores e Informática}
+\acro{glisc}[GLISC]{Grey Literature International Steering Committee}
+\acro{hg}[HG]{Henrique Gala}
+\acro{if}[IF]{Iury Figueredo}
+\acro{cs}[CS]{Cibersegurança}
+\acro{fp}[FP]{Footprinting}
+\acro{rr}[RR]{Reconhecimento de Redes}
+\acro{tcp}[TCP]{Protocolo de Transmissão}
+\acro{ip}[IP]{Protocolo de Internet}
+\acro{seq}[SEQ]{Números de sequência}
+\acro{icmp}[ICMP]{Protocolo de Mensagens de Controlo da Internet}
+\acro{ack}[ACK]{Números de confirmação}
+\acro{eh}[EH]{Ethical Hacking}
+\acro{ietf}[IETF]{Internet Engineering Task Force}
+\acro{isn}[ISN]{Initial Sequence Number}
+\acro{rst}[RST]{Reset}
+\acro{syn}[SYN]{Synchronize}
+\acro{ids}[IDS]{Deteção de intrusão}
+\acro{so}[SO]{Sistema Operacional}
+\acro{eci}[ECI]{Engenharia de Computadores e Informática}
+\acro{uefi}[UEFI]{Unfied Extensible Firmware Development} 
+\acro{eh}[EH]{Ethical Hacking}
+\acro{ep}[EP]{Especificações de Protocolo}
+\acro{udp}[UDP]{User Datagram Protocol}
+\acro{ps}[PS]{Port Scanning}
+\end{acronym}
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\printbibliography
+
+\end{document}

@@ -1,0 +1,417 @@
+<!DOCTYPE html>
+<html lang="pt">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Exploração Técnica - IECI</title>
+    
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.3/jquery.min.js"></script>
+
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/css/bootstrap.min.css">
+
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+
+    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
+    <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+
+    <script src="https://code.highcharts.com/highcharts.js"></script>
+    <script src="https://code.highcharts.com/modules/exporting.js"></script>
+
+    <link rel="stylesheet" href="css/style.css">
+
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/js/bootstrap.min.js"></script>
+
+    <script src="js/scripts.js"></script>
+</head>
+
+<body>
+
+    <!-- NAVBAR -->
+    <nav class="navbar navbar-inverse navbar-fixed-top">
+        <div class="container">
+            <div class="navbar-header">
+                <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#navbar" aria-expanded="false" aria-controls="navbar">
+                    <span class="sr-only">Toggle navigation</span>
+                    <span class="icon-bar"></span>
+                    <span class="icon-bar"></span>
+                    <span class="icon-bar"></span>
+                </button>
+                <a class="navbar-brand" href="index.html">IECI Projeto</a>
+            </div>
+
+                <!-- Botão Dark Mode -->
+                <button type="button" id="themeBtn" class="btn btn-warning navbar-btn navbar-right" style="margin-right: 0; margin-left: 15px;" title="Alternar entre Modo Claro e Escuro" aria-label="Alternar Tema">
+                    <i class="fa fa-moon-o"></i>
+                </button>
+
+            <div id="navbar" class="collapse navbar-collapse">
+                <ul class="nav navbar-nav navbar-right">
+                    <li><a href="index.html">Início</a></li>
+                    <li><a href="metodologia.html">Metodologia</a></li>
+                    <li class="active"><a href="tecnica.html">Técnica</a></li>
+                    <li><a href="analise.html">Análise</a></li> 
+                    <li><a href="laboratorio.html">Laboratório</a></li>
+                    <li><a href="about.html">Sobre</a></li>
+                </ul>
+            </div>
+        </div>
+    </nav>
+
+
+    <!-- CONTEÚDO PRINCIPAL -->
+    <div class="container mt-50">
+        
+        <!-- HEADER UNIFICADO -->
+        <div class="page-header-unified">
+            <h1 class="text-uppercase">Exploração Técnica</h1>
+            <p class="lead text-muted">Fundamentos de Protocolo para o Scanning (RFC 793 e RFC 792).</p>
+            <span class="label label-primary" style="font-size: 100%;">Capítulo 3</span>
+        </div>
+        <div class="row mt-50 mb-30">
+            <div class="col-md-12">
+                <h2 class="page-header mt-0 text-primary"><i class="fa fa-crosshairs"></i> Fundamentos de Protocolo para o Scanning</h2>
+            </div>
+        <!-- SECÇÃO 1: O Protocolo TCP -->
+        <div class="row">
+            <div class="col-md-12">
+                <div class="panel panel-default">
+                    <div class="panel-body p-20">
+                        <h2 class="h4 mt-0 border-bottom pb-20 text-info fw-bold">
+                            <i class="fa fa-share-alt"></i> O Protocolo de Controlo de Transmissão (TCP)
+                        </h2>
+                        
+                        <div class="row mt-20">
+                            <!-- Texto Explicativo -->
+                            <div class="col-md-7">
+                                <p class="text-justify text-muted">
+                                    O <strong>Transmission Control Protocol (TCP)</strong>, especificado na RFC 793, é a fundação da comunicação fiável e orientada à conexão na Internet. Embora o seu propósito seja garantir a entrega ordenada de dados, as regras estritas que governam a sua operação (como a resposta a segmentos inesperados) são o ponto central explorado pelas técnicas de <em>scanning</em> furtivo.
+                                </p>
+                                
+                                <h4 class="fw-bold mt-30 mb-20 text-main">Mecânica do Sequence Number (SEQ)</h4>
+                                <p class="text-justify text-muted">
+                                    Um dos aspetos mais críticos para a segurança é o <strong>Sequence Number</strong> (32 bits).
+                                    Quando a flag <strong>SYN</strong> está presente (no início da conexão), este campo contém o <em>Initial Sequence Number</em> (ISN).
+                                    Um detalhe técnico vital é que a flag SYN consome, por si só, uma unidade de espaço de sequência.
+                                    Assim, o primeiro byte de dados reais da aplicação terá sempre o número de sequência <code>ISN + 1</code>.
+                                </p>
+
+                                <div class="alert alert-warning mt-20">
+                                    <h5 class="fw-bold text-danger"><i class="fa fa-exclamation-triangle"></i> A Regra do Reset (RST)</h5>
+                                    <p class="small mb-0">
+                                        A base do <em>stealth scanning</em> reside numa regra fundamental da RFC 793:
+                                        <em>"Se a conexão não existe (CLOSED), um RST é enviado em resposta a qualquer segmento de entrada, exceto outro reset."</em>
+                                        Isto permite inferir que uma porta está fechada sem completar o handshake.
+                                    </p>
+                                </div>
+                            </div>
+
+                            <!-- Visualização do Cabeçalho TCP -->
+                            <div class="col-md-5">
+                                <div class="well text-center" style="background-color: #f9f9f9; border: 1px solid #ddd;">
+                                    <h5 class="fw-bold mb-20">Estrutura do Cabeçalho TCP</h5>
+                                    <div class="tcp-header-grid text-center small fw-bold">
+                                        <div class="header-cell" onclick="detalhe('Source Port (16 bits): Porta de origem.')">Source Port</div>
+                                        <div class="header-cell" onclick="detalhe('Dest Port (16 bits): Porta de serviço destino.')">Dest Port</div>
+                                        <div class="header-cell full-width" onclick="detalhe('Seq Number (32 bits): Se SYN=1 é ISN.')">Sequence Number</div>
+                                        <div class="header-cell full-width" onclick="detalhe('Ack Number (32 bits): Próximo byte esperado.')">Ack Number</div>
+                                        <div class="header-cell flex-grow-1" onclick="detalhe('Flags: SYN, ACK, FIN, RST.')">Flags</div>
+                                        <div class="header-cell flex-grow-1" onclick="detalhe('Window: Controlo de fluxo.')">Window</div>
+                                    </div>
+                                    <small class="text-muted d-block mt-10">Clique nas células para ver detalhes da RFC.</small>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- SECÇÃO 2 e 3: ICMP e Gráfico -->
+        <div class="row mt-30 mb-30">
+            
+            <!-- SECÇÃO 2: Protocolo ICMP -->
+            <div class="col-md-6">
+                <div class="panel panel-default" style="height: 100%; min-height: 520px;"> 
+                    <div class="panel-body p-20">
+                        <h2 class="h4 mt-0 border-bottom pb-20 text-warning fw-bold">
+                            <i class="fa fa-rss"></i> Protocolo ICMP (RFC 792)
+                        </h2>
+                        <p class="text-justify text-muted">
+                            O <strong>Internet Control Message Protocol</strong> atua como o sistema de diagnóstico da camada de rede. Para o reconhecimento de redes, duas mensagens são essenciais:
+                        </p>
+                        <ul class="list-group">
+                            <li class="list-group-item" style="padding-left: 0;">
+                                <i class="fa fa-check text-success"></i> <strong>Echo Request/Reply (Tipo 8/0):</strong> Base do <em>Host Discovery</em>. Se o host estiver ativo e não filtrado, responde ao Echo Request.
+                            </li>
+                            <li class="list-group-item" style="padding-left: 0;">
+                                <i class="fa fa-check text-success"></i> <strong>Destination Unreachable (Tipo 3):</strong> Crucial para o <em>UDP Scanning</em>. O código 3 (Port Unreachable) é a única forma de confirmar que uma porta UDP está fechada.
+                            </li>
+                        </ul>
+
+                        <!-- Tabela Técnica ICMP -->
+                        <h5 class="fw-bold mt-30 mb-10">Estrutura do Cabeçalho ICMP</h5>
+                        <div class="tech-grid text-center small">
+                            <div class="grid-cell" style="background-color: #e9ecef;">Type (8 bits)</div>
+                            <div class="grid-cell" style="background-color: #e9ecef;">Code (8 bits)</div>
+                            <div class="grid-cell full-w">Checksum (16 bits)</div>
+                            <div class="grid-cell full-w">Identifier & Sequence (Diagnóstico)</div>
+                            <div class="grid-cell full-w" style="background-color: #f8f9fa;">Data (Payload opcional)</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- SECÇÃO 3: Comparativo e Gráfico -->
+            <div class="col-md-6">
+                <div class="panel panel-default" style="height: 100%; min-height: 520px;">
+                    <div class="panel-body p-20">
+                        
+                        <!-- Cabeçalho com Seletor -->
+                        <div class="row border-bottom pb-10 mb-20">
+                            <div class="col-xs-6">
+                                <h2 class="h4 mt-0 text-main fw-bold"><i class="fa fa-pie-chart"></i> Overhead</h2>
+                            </div>
+                            <div class="col-xs-6 text-right">
+                                <!-- Seletor de Tipo de Gráfico -->
+                                <select id="tech-chart-selector" class="form-control input-sm" style="width: auto; display: inline-block;">
+                                    <option value="doughnut">Rosca</option>
+                                    <option value="bar">Barras</option>
+                                    <option value="pie">Circular</option>
+                                </select>
+                            </div>
+                        </div>
+
+                        <p class="text-muted text-center mb-20">
+                            Comparativo do tamanho mínimo dos cabeçalhos (Bytes).
+                        </p>
+                        
+                        <!-- Contentor do Gráfico -->
+                        <div id="protocol-comparison-chart" style="height: 300px; width: 100%; margin: 0 auto;"></div>
+                        
+                        <p class="small text-muted text-center mt-20">
+                            <strong>Dados:</strong> TCP (20B) vs UDP (8B) vs ICMP (8B).<br>
+                            Fonte: Análise das RFCs 793, 768 e 792.
+                        </p>
+                    </div>
+                </div>
+            </div>
+        </div>
+<!-- SECÇÃO 3.1.3: Host Discovery -->
+        <div class="row mt-30 mb-30">
+            <div class="col-md-12">
+                <div class="panel panel-info">
+                    <div class="panel-heading">
+                        <h3 class="panel-title fw-bold"><i class="fa fa-binoculars"></i> O Processo de Reconhecimento (Host Discovery)</h3>
+                    </div>
+                    <div class="panel-body">
+                        <p class="text-muted">
+                            A primeira etapa do reconhecimento é determinar quais os sistemas ativos na rede. Esta técnica explora as mensagens <strong>ICMP Echo (Ping)</strong> descritas na RFC 792. A tabela seguinte resume o comportamento esperado:
+                        </p>
+                        <div class="table-responsive">
+                            <table class="table table-bordered table-striped text-center small" style="margin-bottom: 0;">
+                                <thead>
+                                    <tr>
+                                        <th class="text-center" style="width: 30%;">Sonda Enviada</th>
+                                        <th class="text-center" style="width: 30%;">Resposta do Alvo</th>
+                                        <th class="text-center" style="width: 40%;">Inferência do Scanner</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <tr>
+                                        <td><span class="label label-primary">Echo Request (Tipo 8)</span></td>
+                                        <td><span class="label label-success">Echo Reply (Tipo 0)</span></td>
+                                        <td><strong>Host Ativo (Online)</strong><br><small class="text-muted">Tráfego ICMP permitido.</small></td>
+                                    </tr>
+                                    <tr>
+                                        <td><span class="label label-primary">Echo Request (Tipo 8)</span></td>
+                                        <td><em>Sem Resposta (Timeout)</em></td>
+                                        <td><strong>Inativo ou Filtrado</strong><br><small class="text-muted">Firewall bloqueia o pedido ou a resposta.</small></td>
+                                    </tr>
+                                    <tr>
+                                        <td>Qualquer Pacote</td>
+                                        <td><span class="label label-danger">Dest. Unreachable (Tipo 3)</span></td>
+                                        <td><strong>Inativo / Erro de Rota</strong><br><small class="text-muted">O host ou a rede não são alcançáveis.</small></td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+<!-- SECÇÃO 3.2: Técnicas de Descoberta de Portas -->
+        <div class="row mt-50 mb-30">
+            <div class="col-md-12">
+                <h2 class="page-header mt-0 text-primary"><i class="fa fa-crosshairs"></i> Técnicas de Descoberta de Portas (Port Scanning)</h2>
+            </div>
+
+            <!-- Painel Esquerdo: Full Connect vs SYN -->
+            <div class="col-md-6">
+                <div class="panel panel-default" style="height: 100%;">
+                    <div class="panel-heading"><h3 class="panel-title fw-bold"><i class="fa fa-plug"></i> Conexão vs Furtividade</h3></div>
+                    <div class="panel-body">
+                        <ul class="list-group">
+                            <li class="list-group-item">
+                                <h5 class="list-group-item-heading fw-bold text-danger">Full Connect Scan</h5>
+                                <p class="list-group-item-text text-muted small">
+                                    Estabelece uma conexão TCP completa (3-way handshake). É o método mais fiável, mas também o mais ruidoso, sendo facilmente detetado e registado nos logs do sistema alvo.
+                                </p>
+                            </li>
+                            <li class="list-group-item">
+                                <h5 class="list-group-item-heading fw-bold text-warning">SYN Scan (Half-open)</h5>
+                                <p class="list-group-item-text text-muted small">
+                                    Envia um pacote <strong>SYN</strong>. Se receber <strong>SYN+ACK</strong>, a porta está aberta, mas o scanner responde imediatamente com <strong>RST</strong> para abortar a conexão. Como o handshake não termina, muitas vezes não é logado.
+                                </p>
+                            </li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Painel Direito: Scans Furtivos -->
+            <div class="col-md-6">
+                <div class="panel panel-default" style="height: 100%;">
+                    <div class="panel-heading"><h3 class="panel-title fw-bold"><i class="fa fa-user-secret"></i> Scans Furtivos (FIN/NULL/XMAS)</h3></div>
+                    <div class="panel-body">
+                        <p class="text-justify text-muted">
+                            Estas técnicas exploram subtilezas da RFC 793. Enviam pacotes com flags atípicas (ex: sem flags no NULL Scan) para provocar uma resposta do sistema operativo sem iniciar uma conexão formal.
+                        </p>
+                        
+                        <div class="alert alert-info mt-20">
+                            <strong><i class="fa fa-info-circle"></i> A Lógica Inversa:</strong><br>
+                            Se a porta estiver <strong>FECHADA</strong>, o sistema responde com <strong>RST</strong>.<br>
+                            Se a porta estiver <strong>ABERTA</strong>, o pacote é ignorado (Drop/Sem Resposta).
+                        </div>
+                        
+                        <p class="small text-muted">
+                            <em>Nota: Sistemas Windows muitas vezes não seguem esta regra estritamente, retornando RST para tudo, o que pode falhar estes scans.</em>
+                        </p>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+<!-- Painel de Largura Total: ACK Scan -->
+        <div class="row mb-30">
+            <div class="col-md-12">
+                <div class="panel panel-primary">
+                    <div class="panel-heading">
+                        <h3 class="panel-title fw-bold"><i class="fa fa-fire"></i> Mapeamento de Firewall (ACK Scan)</h3>
+                    </div>
+                    <div class="panel-body">
+                        <p class="text-muted">
+                            Ao contrário dos outros métodos, o <strong>ACK Scan</strong> não serve para descobrir se uma porta está aberta (ambos os estados retornam RST), mas sim para mapear as regras do Firewall (*ruleset*). O objetivo é distinguir entre configurações <strong>Stateful</strong> (com estado) e <strong>Stateless</strong> (sem estado).
+                        </p>
+                        <p class="text-muted small">
+                            Ao enviar um pacote ACK aleatório (sem conexão prévia), um firewall simples deixará passar o pacote (gerando um RST do alvo), enquanto um firewall com estado bloqueará o pacote por não reconhecer a sessão.
+                        </p>
+                        
+                        <div class="table-responsive mt-20">
+                            <table class="table table-bordered table-hover text-center small mb-0">
+                                <thead>
+                                    <tr>
+                                        <th class="text-center" style="width: 25%;">Resposta Recebida</th>
+                                        <th class="text-center" style="width: 25%;">Estado da Porta</th>
+                                        <th class="text-center" style="width: 50%;">Diagnóstico do Firewall</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <tr>
+                                        <td><span class="label label-danger">RST (Reset)</span></td>
+                                        <td>Unfiltered</td>
+                                        <td>
+                                            <strong>Stateless (Sem Estado)</strong><br>
+                                            <small class="text-muted">O pacote passou pelo firewall e o sistema operativo respondeu.</small>
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td><em>Sem Resposta</em> (Drop)</td>
+                                        <td rowspan="2" style="vertical-align: middle;">Filtered</td>
+                                        <td rowspan="2" style="vertical-align: middle;">
+                                            <strong>Stateful (Com Estado)</strong><br>
+                                            <small class="text-muted">O pacote foi bloqueado pelo firewall porque não pertence a uma sessão válida.</small>
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td><span class="label label-warning">ICMP Unreachable</span></td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        </div>
+<!-- BLOCO 2: Scanning UDP e Limitações -->
+        <div class="row mt-30 mb-50">
+            <div class="col-md-12">
+                <h2 class="page-header mt-0 text-primary"><i class="fa fa-tachometer"></i> Scanning UDP e Limitações</h2>
+            </div>
+
+            <!-- Painel Esquerdo: Mecânica UDP -->
+            <div class="col-md-6">
+                <div class="panel panel-default" style="height: 100%;">
+                    <div class="panel-heading">
+                        <h3 class="panel-title fw-bold"><i class="fa fa-paper-plane-o"></i> Mecânica do UDP Scan</h3>
+                    </div>
+                    <div class="panel-body">
+                        <p class="text-justify text-muted small">
+                            O protocolo UDP é <em>connectionless</em> (não orientado à conexão), o que torna o scanning mais difícil e lento do que em TCP. O scanner envia um pacote UDP vazio (ou específico) para uma porta:
+                        </p>
+                        <ul class="list-group">
+                            <li class="list-group-item list-group-item-danger">
+                                <i class="fa fa-times-circle"></i> <strong>Porta Fechada:</strong><br>
+                                O sistema responde com um erro ICMP <strong>Port Unreachable</strong> (Tipo 3, Código 3). Isto confirma que o host está ativo mas a porta fechada.
+                            </li>
+                            <li class="list-group-item list-group-item-success">
+                                <i class="fa fa-check-circle"></i> <strong>Porta Aberta (ou Filtrada):</strong><br>
+                                Se não houver resposta, presume-se que a porta está <strong>Open|Filtered</strong>. Raramente, uma aplicação pode responder com um pacote UDP.
+                            </li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Painel Direito: Limitações Técnicas -->
+            <div class="col-md-6">
+                <div class="panel panel-danger" style="height: 100%;">
+                    <div class="panel-heading">
+                        <h3 class="panel-title fw-bold"><i class="fa fa-exclamation-triangle"></i> Desafios e Rate Limiting</h3>
+                    </div>
+                    <div class="panel-body">
+                        <p class="text-muted small">
+                            A principal barreira ao scanning UDP não é técnica, mas sim de performance imposta pelos Sistemas Operativos.
+                        </p>
+                        
+                        <div class="alert alert-warning mt-20">
+                            <strong><i class="fa fa-clock-o"></i> ICMP Rate Limiting:</strong><br>
+                            Sistemas como Linux e Windows limitam o número de mensagens de erro ICMP (ex: 1 por segundo) para evitar congestionamento. Isto torna um scan completo de 65.535 portas UDP extremamente lento (pode demorar mais de 18 horas).
+                        </div>
+
+                        <div class="well well-sm small">
+                            <strong><i class="fa fa-shield"></i> Bloqueio Total:</strong>
+                            Muitas firewalls bloqueiam todo o tráfego ICMP de entrada/saída, tornando impossível distinguir entre uma porta aberta (sem resposta) e uma porta filtrada (sem resposta).
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <!-- FOOTER -->
+    <footer class="text-center">
+        <div class="container">
+            <hr class="border-secondary">
+            <div class="row">
+                <div class="col-md-6 text-left">
+                    <small class="text-muted-a11y">Universidade de Aveiro - DETI - IECI 2025</small>
+                </div>
+                <div class="col-md-6 text-right">
+                    <small class="text-muted-a11y"><i class="fa fa-clock-o"></i> <span id="relogio-digital">00:00:00</span></small>
+                </div>
+            </div>
+        </div>
+    </footer>
+
+</body>
+</html>

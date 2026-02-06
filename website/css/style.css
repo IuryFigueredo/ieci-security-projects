@@ -1,0 +1,242 @@
+/* 
+ * ARQUIVO: style.css
+ * DESCRICAO: Estilos globais, correções para Bootstrap 3 e implementação de Dark Mode.
+ * PROJETO: IECI - Reconhecimento de Redes
+ */
+
+:root {
+    --bg-body: #f8f9fa;
+    --text-main: #212529;
+    --nav-bg: #222;       /* Navbar escura padrão */
+    --primary-color: #0d6efd; /* Azul moderno para destaque */
+}
+
+/*1. RESET E BASE*/
+body {
+    background-color: var(--bg-body);
+    font-family: 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+    color: var(--text-main);
+    padding-top: 70px; /* Compensação para navbar-fixed-top */
+    transition: background-color 0.3s, color 0.3s;
+}
+
+/*2. UTILITÁRIOS*/
+.mt-0 { margin-top: 0; }
+.mt-20 { margin-top: 20px; }
+.mt-30 { margin-top: 30px; }
+.mt-50 { margin-top: 50px; }
+.mb-20 { margin-bottom: 20px; }
+.mb-30 { margin-bottom: 30px; }
+.pt-50 { padding-top: 50px; }
+.pb-20 { padding-bottom: 20px; }
+.p-20 { padding: 20px; }
+.p-0 { padding: 0; }
+
+.text-center { text-align: center; }
+.text-right { text-align: right; }
+.text-left { text-align: left; }
+.fw-bold { font-weight: 700; }
+
+.d-flex-center { 
+    display: flex; 
+    align-items: center; 
+    justify-content: center;
+    flex-direction: column;
+}
+
+/*3. COMPONENTES DE NAVEGAÇÃO*/
+.navbar-inverse {
+    background-color: var(--nav-bg);
+    border: none;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+}
+
+.navbar-inverse .navbar-brand {
+    font-weight: bold;
+    color: #fff;
+    font-size: 20px;
+}
+
+.navbar-inverse .navbar-nav > li > a {
+    color: #ccc;
+    font-size: 15px;
+    transition: color 0.3s;
+}
+
+.navbar-inverse .navbar-nav > li > a:hover,
+.navbar-inverse .navbar-nav > .active > a {
+    color: #fff;
+    background-color: transparent; 
+    border-bottom: 2px solid var(--primary-color);
+}
+
+#themeBtn {
+    margin-top: 15px;
+    margin-left: 10px;
+    cursor: pointer;
+    color: #fff;
+}
+
+/*4. COMPONENTES DE UI (Paineis e Cabeçalhos)*/
+/* Header Unificado (Hero Section) */
+.page-header-unified {
+    background: #fff;
+    padding: 40px 20px;
+    border-radius: 6px;
+    border: 1px solid #ddd;
+    box-shadow: 0 4px 6px rgba(0,0,0,0.05);
+    text-align: center;
+    margin-bottom: 40px;
+    transition: background-color 0.3s;
+}
+
+.page-header-unified h1 {
+    margin-top: 0;
+    font-weight: 300;
+}
+
+/* Cards (Baseados em Bootstrap Panels) */
+.panel {
+    border: none;
+    border-radius: 8px;
+    box-shadow: 0 2px 10px rgba(0,0,0,0.08); 
+    margin-bottom: 20px;
+    background: #fff;
+    transition: background-color 0.3s;
+}
+
+.panel-default > .panel-heading {
+    background-color: #fff;
+    border-bottom: 1px solid #eee;
+    font-weight: bold;
+    font-size: 16px;
+    padding: 15px 20px;
+    transition: background-color 0.3s, color 0.3s;
+}
+
+.panel-body {
+    padding: 20px;
+    font-size: 14px;
+    line-height: 1.6;
+}
+
+/* Badges e Botões Customizados */
+.label-primary { background-color: var(--primary-color); }
+.btn-primary { 
+    background-color: var(--primary-color); 
+    border-color: var(--primary-color);
+}
+
+/* Rodapé */
+footer {
+    border-top: 1px solid #ddd;
+    padding: 30px 0;
+    margin-top: 50px;
+    color: #777;
+    background: #f8f9fa;
+    transition: background-color 0.3s;
+}
+
+/*5. COMPONENTES ESPECÍFICOS (Grids Técnicos)*/
+.tech-grid, .tcp-header-grid {
+    display: flex;
+    flex-wrap: wrap;
+    border: 1px solid #ddd;
+    border-radius: 4px;
+    overflow: hidden;
+}
+
+.grid-cell, .header-cell {
+    flex: 1 1 45%;
+    padding: 10px;
+    border: 1px solid #eee;
+    background-color: #fff;
+    cursor: pointer;
+}
+
+.full-w, .full-width { flex: 1 1 100%; }
+
+/* Animação na Página About */
+.author-row { cursor: pointer; transition: transform 0.2s; }
+.author-row:hover { transform: translateY(-5px); }
+
+/*6. DARK MODE (Gestão de Tema)*/
+body.dark-theme {
+    background-color: #121212 !important;
+    color: #e0e0e0;
+}
+
+/* Paineis e Contentores em Modo Escuro */
+body.dark-theme .panel-default,
+body.dark-theme .panel-primary,
+body.dark-theme .panel-success,
+body.dark-theme .panel-info,
+body.dark-theme .panel-warning,
+body.dark-theme .panel-danger,
+body.dark-theme .well,
+body.dark-theme .alert,
+body.dark-theme .list-group-item,
+body.dark-theme .page-header-unified,
+body.dark-theme .grid-cell, 
+body.dark-theme .header-cell {
+    background-color: #2c2c2c !important;
+    border-color: #444 !important;
+    color: #e0e0e0 !important;
+}
+
+/* Cabeçalhos de Paineis */
+body.dark-theme .panel-heading {
+    background-image: none !important;
+    background-color: #3a3a3a !important;
+    border-color: #555 !important;
+}
+
+/* Correção de Texto em Cabeçalhos */
+body.dark-theme .panel-heading *,
+body.dark-theme .panel-heading .text-primary,
+body.dark-theme .panel-heading .text-success,
+body.dark-theme .panel-heading .text-danger,
+body.dark-theme .panel-heading .text-warning {
+    color: #ffffff !important;
+    text-shadow: none !important;
+}
+
+/* Cores de Texto (Adaptação Pastel para Contraste) */
+body.dark-theme .text-primary { color: #6ea8fe !important; }
+body.dark-theme .text-success { color: #75b798 !important; }
+body.dark-theme .text-danger  { color: #ea868f !important; }
+body.dark-theme .text-warning { color: #ffda6a !important; }
+body.dark-theme .text-info    { color: #6edff6 !important; }
+body.dark-theme .text-muted   { color: #adb5bd !important; }
+
+/* Formulários */
+body.dark-theme .form-control {
+    background-color: #333;
+    border-color: #555;
+    color: #fff;
+}
+
+body.dark-theme .btn-default {
+    background-color: #3a3a3a !important;
+    color: #fff !important;
+    border-color: #555 !important;
+}
+
+/* Tabelas */
+body.dark-theme .table-striped > tbody > tr:nth-of-type(odd) {
+    background-color: #383838 !important;
+}
+
+body.dark-theme footer {
+    background-color: #0f0f0f !important;
+    border-top-color: #333;
+    color: #888;
+}
+
+/* Leaflet Maps: Inversão de Cores para evitar brilho excessivo */
+body.dark-theme .leaflet-layer,
+body.dark-theme .leaflet-control-zoom-in,
+body.dark-theme .leaflet-control-zoom-out,
+body.dark-theme .leaflet-control-attribution {
+    filter: invert(100%) hue-rotate(180deg) brightness(95%) contrast(90%);
+}

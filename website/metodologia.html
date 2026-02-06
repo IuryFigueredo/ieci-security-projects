@@ -1,0 +1,150 @@
+<!DOCTYPE html>
+<html lang="pt">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Metodologia - Reconhecimento de Redes</title>
+    
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.3/jquery.min.js"></script>
+
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/css/bootstrap.min.css">
+
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+
+    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
+    <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+
+    <script src="https://code.highcharts.com/highcharts.js"></script>
+    <script src="https://code.highcharts.com/modules/exporting.js"></script>
+
+    <link rel="stylesheet" href="css/style.css">
+
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/js/bootstrap.min.js"></script>
+
+    <script src="js/scripts.js"></script>
+</head>
+<body>
+
+    <!-- NAVBAR -->
+    <nav class="navbar navbar-inverse navbar-fixed-top">
+        <div class="container">
+            <div class="navbar-header">
+                <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#navbar" aria-expanded="false" aria-controls="navbar">
+                    <span class="sr-only">Toggle navigation</span>
+                    <span class="icon-bar"></span>
+                    <span class="icon-bar"></span>
+                    <span class="icon-bar"></span>
+                </button>
+                <a class="navbar-brand" href="index.html">IECI Projeto</a>
+            </div>
+
+                <!-- Botão Dark Mode -->
+                <button type="button" id="themeBtn" class="btn btn-warning navbar-btn navbar-right" style="margin-right: 0; margin-left: 15px;" title="Alternar entre Modo Claro e Escuro" aria-label="Alternar Tema">
+                    <i class="fa fa-moon-o"></i>
+                </button>
+
+            <div id="navbar" class="collapse navbar-collapse">
+                <ul class="nav navbar-nav navbar-right">
+                    <li><a href="index.html">Início</a></li>
+                    <li class="active"><a href="metodologia.html">Metodologia</a></li>
+                    <li><a href="tecnica.html">Técnica</a></li>
+                    <li><a href="analise.html">Análise</a></li> 
+                    <li><a href="laboratorio.html">Laboratório</a></li>
+                    <li><a href="about.html">Sobre</a></li>
+                </ul>
+            </div>
+        </div>
+    </nav>
+
+    <!-- CONTEÚDO PRINCIPAL -->
+    <div class="container mt-50">
+        
+        <!-- 1. Cabeçalho da Página -->
+        <div class="page-header-unified">
+            <h1 class="text-uppercase">Metodologia</h1>
+            <p class="lead text-muted">Abordagem Teórica e Analítica</p>
+            <p class="small text-muted" style="max-width: 800px; margin: 0 auto;">
+                Trabalho de natureza teórica e analítica, focado na precisão técnica dos fundamentos do <strong>Ethical Hacking (EH)</strong> e na descrição fundamentada dos métodos de reconhecimento.
+            </p>
+            <span class="label label-primary" style="font-size: 100%; display: inline-block; margin-top: 15px;">Capítulo 2</span>
+        </div>
+
+        <!-- 2. Secção: Especificações de Protocolo (IETF) -->
+        <div class="row">
+            <div class="col-md-12">
+                <h3 class="page-header mt-0 text-primary"><i class="fa fa-book"></i> Especificações de Protocolo (IETF)</h3>
+            </div>
+            
+            <!-- Painel Esquerdo: TCP -->
+            <div class="col-md-6">
+                <div class="panel panel-default">
+                    <div class="panel-heading">
+                        <h3 class="panel-title fw-bold">RFC 793: Transmission Control Protocol</h3>
+                    </div>
+                    <div class="panel-body">
+                        <p class="text-justify text-muted">
+                            Análise fundamental dos campos de controlo (flags) <strong>SYN</strong>, <strong>ACK</strong> e <strong>RST</strong>. O funcionamento padrão da flag <strong>RST</strong> em portas fechadas é a base técnica que justifica o <em>Stealth Scanning</em>.
+                        </p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Painel Direito: ICMP -->
+            <div class="col-md-6">
+                <div class="panel panel-default">
+                    <div class="panel-heading">
+                        <h3 class="panel-title fw-bold">RFC 792: Internet Control Message Protocol</h3>
+                    </div>
+                    <div class="panel-body">
+                        <p class="text-justify text-muted">
+                            Essencial para o <em>Footprinting</em> (mensagens Echo/Echo Reply). Justifica a lógica de deteção de portas <strong>UDP</strong> fechadas através da mensagem crítica: <strong>Destination Unreachable (Tipo 3, Código 3)</strong>.
+                        </p>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- 3. Secção: Contextualização Prática -->
+        <div class="row mt-30">
+            <div class="col-md-12">
+                <div class="panel panel-primary">
+                    <div class="panel-heading">
+                        <h3 class="panel-title fw-bold"><i class="fa fa-cogs"></i> Validação e Vulnerabilidades</h3>
+                    </div>
+                    <div class="panel-body">
+                        <p class="text-muted">
+                            Aplicação das regras protocolares em ferramentas de <em>Port Scanning</em>. Estudo do <strong>ACK Scan</strong> para mapeamento de regras em firewalls.
+                        </p>
+                        
+                        <hr>
+
+                        <!-- Destaque CVE (Danger) -->
+                        <div class="alert alert-danger mb-0">
+                            <h4 class="mt-0"><i class="fa fa-bug"></i> Vulnerabilidade Crítica (CVE-2023-45237)</h4>
+                            <p>
+                                Análise de vulnerabilidades na Camada de Transporte. Destaque para a <strong>CVE-2023-45237</strong>: uma falha de ISN previsível em firmwares <strong>UEFI</strong>, que compromete a segurança contra ataques de <em>TCP Session Hijacking</em>.
+                            </p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- FOOTER -->
+    <footer class="text-center">
+        <div class="container">
+            <hr class="border-secondary">
+            <div class="row">
+                <div class="col-md-6 text-left">
+                    <small class="text-muted-a11y">Universidade de Aveiro - DETI - IECI 2025</small>
+                </div>
+                <div class="col-md-6 text-right">
+                    <small class="text-muted-a11y"><i class="fa fa-clock-o"></i> <span id="relogio-digital">00:00:00</span></small>
+                </div>
+            </div>
+        </div>
+    </footer>
+
+</body>
+</html>

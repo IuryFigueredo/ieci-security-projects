@@ -1,0 +1,176 @@
+<!DOCTYPE html>
+<html lang="pt">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Reconhecimento de Redes - IECI</title>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.3/jquery.min.js"></script>
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/css/bootstrap.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+    <link rel="stylesheet" href="css/style.css">
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/js/bootstrap.min.js"></script>
+    <script src="js/scripts.js"></script>
+</head>
+
+<body>
+
+    <!-- NAVBAR -->
+    <nav class="navbar navbar-inverse navbar-fixed-top">
+        <div class="container">
+            <div class="navbar-header">
+                <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#navbar" aria-expanded="false" aria-controls="navbar">
+                    <span class="sr-only">Toggle navigation</span>
+                    <span class="icon-bar"></span>
+                    <span class="icon-bar"></span>
+                    <span class="icon-bar"></span>
+                </button>
+                <a class="navbar-brand" href="index.html">IECI Projeto</a>
+            </div>
+
+                <!-- Botão Dark Mode -->
+                <button type="button" id="themeBtn" class="btn btn-warning navbar-btn navbar-right" style="margin-right: 0; margin-left: 15px;" title="Alternar entre Modo Claro e Escuro" aria-label="Alternar Tema">
+                <i class="fa fa-moon-o"></i>
+                </button>
+
+            <div id="navbar" class="collapse navbar-collapse">
+                <ul class="nav navbar-nav navbar-right">
+                    <li class="active"><a href="index.html">Início</a></li>
+                    <li><a href="metodologia.html">Metodologia</a></li>
+                    <li><a href="tecnica.html">Técnica</a></li>
+                    <li><a href="analise.html">Análise</a></li> 
+                    <li><a href="laboratorio.html">Laboratório</a></li>
+                    <li><a href="about.html">Sobre</a></li>
+                </ul>
+            </div>
+        </div>
+    </nav>
+
+<!-- CONTEÚDO PRINCIPAL -->
+    <div class="container mt-50">
+
+        <!-- 1. Header Unificado -->
+        <div class="page-header-unified">
+            <h1 class="text-uppercase" style="font-size: 32px; margin-top: 0;">Arquitetura de Segurança e Reconhecimento de Redes</h1>
+            <p class="lead text-muted" style="font-size: 18px; margin-bottom: 25px;">
+                Projeto no âmbito da Licenciatura em Engenharia de Computadores e Informática (<strong>LECI</strong>).
+            </p>
+            <p class="small text-muted" style="max-width: 800px; margin: 0 auto 25px auto;">
+                Exploração da relevância da <strong>Cibersegurança (CS)</strong> e do <strong>Reconhecimento de Redes (RR)</strong>, analisando rigorosamente as técnicas de <em>port scanning</em> e <strong>Footprinting (FP)</strong> para avaliar a superfície de ataque.
+            </p>
+            <a href="metodologia.html" class="btn btn-primary btn-lg"><i class="fa fa-book"></i> Ver Metodologia</a>
+        </div>
+
+        <!-- 2. Linha de Destaques (3 Colunas) -->
+        <div class="row display-flex">
+            
+            <!-- Coluna 1: Protocolos -->
+            <div class="col-md-4">
+                <div class="panel panel-default" style="height: 100%;">
+                    <div class="panel-body text-center">
+                        <div class="mb-20">
+                            <i class="fa fa-search fa-3x text-primary"></i>
+                        </div>
+                        <h3 class="panel-title fw-bold text-uppercase mb-20">Protocolos & Scans</h3>
+                        <p class="text-justify text-muted small">
+                            Análise detalhada do <strong>Protocolo de Transmissão (TCP)</strong> e <strong>ICMP</strong>. O estudo detalha como <em>scans</em> furtivos, como o <strong>NULL Scan</strong>, exploram regras protocolares (<em>Reset</em> (<strong>RST</strong>) vs. <em>drop</em>) para inferir o estado da porta sem completar o <em>three-way handshake</em>.
+                        </p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Coluna 2: Defesa -->
+            <div class="col-md-4">
+                <div class="panel panel-default" style="height: 100%;">
+                    <div class="panel-body text-center">
+                        <div class="mb-20">
+                            <i class="fa fa-shield fa-3x text-danger"></i>
+                        </div>
+                        <h3 class="panel-title fw-bold text-uppercase mb-20">Defesa & Vulnerabilidades</h3>
+                        <p class="text-justify text-muted small">
+                            O <strong>ACK Scan</strong> revela-se decisivo para distinguir <em>firewalls</em> com e sem estado. Identificam-se fragilidades como a previsibilidade do <strong>Initial Sequence Number (ISN)</strong> em firmwares <strong>UEFI</strong>, perturbando a segurança contra <em>TCP Session Hijacking</em>.
+                        </p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Coluna 3: Kernel -->
+            <div class="col-md-4">
+                <div class="panel panel-default" style="height: 100%;">
+                    <div class="panel-body text-center">
+                        <div class="mb-20">
+                            <i class="fa fa-cogs fa-3x text-success"></i>
+                        </div>
+                        <h3 class="panel-title fw-bold text-uppercase mb-20">Kernel & Performance</h3>
+                        <p class="text-justify text-muted small">
+                            A robustez da arquitetura de segurança apoia-se no desempenho do <em>kernel</em>. Conceitos chave como <strong>zero copy</strong> e <strong>tasklets</strong> são fundamentais para concretizar a escalabilidade necessária nos sistemas de deteção de intrusos moderna.
+                        </p>
+                    </div>
+                </div>
+            </div>
+
+        </div>
+
+        <!-- 3. Bloco de Ética -->
+        <div class="row mt-30">
+            <div class="col-md-12">
+                <div class="panel panel-warning">
+                    <div class="panel-heading">
+                        <h3 class="panel-title fw-bold"><i class="fa fa-balance-scale"></i> Ética e Responsabilidade Profissional</h3>
+                    </div>
+                    <div class="panel-body">
+                        <div class="row">
+                            <div class="col-md-1 text-center hidden-xs">
+                                <i class="fa fa-gavel fa-2x text-warning mt-10"></i>
+                            </div>
+                            <div class="col-md-11">
+                                <p class="text-muted mb-0">
+                                    As decisões éticas e legais são abordadas com forte importância neste projeto. Reforça-se que o domínio destas técnicas avançadas deve ser aplicado <strong>somente</strong> no âmbito do <strong>Ethical Hacking (EH)</strong> e com extrema responsabilidade, visando a proteção e não a exploração indevida.
+                                </p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+<div class="row mt-30">
+    <div class="col-md-12">
+        <div class="alert alert-warning" style="border-left: 5px solid #f0ad4e;">
+            <h4 class="text-warning fw-bold" style="margin-top: 0;">
+                <i class="fa fa-info-circle"></i> Declaração de Autoria e Uso de IA
+            </h4>
+            <p class="small text-muted" style="margin-bottom: 10px;">
+                O presente trabalho recorreu à Inteligência Artificial generativa (Gemini 3) como ferramenta auxiliar de produtividade e revisão textual.
+            </p>
+            <div class="row">
+                <div class="col-md-6">
+                    <p class="small"><strong><i class="fa fa-paint-brush"></i> Interface (HTML/CSS):</strong> A IA foi utilizada para auxiliar na estruturação semântica e na implementação das regras de estilo (Bootstrap 3), garantindo consistência visual.</p>
+                </div>
+                <div class="col-md-6">
+                    <p class="small"><strong><i class="fa fa-code"></i> Lógica (JavaScript):</strong> A arquitetura lógica, os algoritmos de simulação e a interatividade foram <strong>concetualizados pelos autores</strong>. A IA interveio estritamente na otimização de sintaxe e <em>debugging</em>, preservando a originalidade do código.</p>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+    </div>
+
+    <!-- FOOTER -->
+    <footer class="text-center">
+        <div class="container">
+            <hr class="border-secondary">
+            <div class="row">
+                <div class="col-md-6 text-left">
+                    <small class="text-muted-a11y">Universidade de Aveiro - DETI - IECI 2025</small>
+                </div>
+                <div class="col-md-6 text-right">
+                    <small class="text-muted-a11y"><i class="fa fa-clock-o"></i> <span id="relogio-digital">00:00:00</span></small>
+                </div>
+            </div>
+        </div>
+    </footer>
+
+</body>
+</html>
